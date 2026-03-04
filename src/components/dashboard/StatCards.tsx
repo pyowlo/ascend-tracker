@@ -184,7 +184,7 @@ export default function StatCards() {
     <div style={{ display: "flex", gap: "16px", marginBottom: "24px" }}>
       <StatCard
         label="Total Revenue"
-        value="$9,487"
+        value="₱9,487"
         change="+12.4%"
         isPositive={true}
         sparkData={sparklineData.revenue}

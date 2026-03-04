@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React from "react";
 import { Search, Download, ChevronDown } from "lucide-react";
@@ -53,7 +53,6 @@ export default function ActionBar({
       </h2>
 
       <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-        {/* Date Filter */}
         <div style={{ position: "relative" }}>
           <button
             onClick={() => setDropdownOpen(!dropdownOpen)}
@@ -122,18 +121,6 @@ export default function ActionBar({
                     fontFamily: "'Bricolage Grotesque', sans-serif",
                     transition: "background 150ms ease",
                   }}
-                  onMouseEnter={(e) => {
-                    if (dateFilter !== opt.value) {
-                      (e.currentTarget as HTMLElement).style.background =
-                        "rgba(37,59,57,0.03)";
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (dateFilter !== opt.value) {
-                      (e.currentTarget as HTMLElement).style.background =
-                        "transparent";
-                    }
-                  }}
                 >
                   {opt.label}
                 </button>
@@ -142,7 +129,6 @@ export default function ActionBar({
           )}
         </div>
 
-        {/* Search */}
         <div style={{ position: "relative" }}>
           <Search
             size={14}
@@ -157,7 +143,6 @@ export default function ActionBar({
           />
           <input
             type="text"
-            placeholder="Search items…"
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
             style={{
@@ -185,7 +170,6 @@ export default function ActionBar({
           />
         </div>
 
-        {/* Export */}
         <button
           onClick={() => {
             setExportPressed(true);

@@ -1,14 +1,22 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   Package,
   TrendingUp,
   BarChart3,
   FileText,
-  ChevronRight,
+  CalendarDays,
+  MessageCircle,
+  Wallet,
+  HandCoins,
+  Truck,
+  BellRing,
 } from "lucide-react";
+import { useAppContext } from "@/lib/app-context";
 
 const iconMap: Record<string, React.ElementType> = {
   LayoutDashboard,
@@ -16,177 +24,90 @@ const iconMap: Record<string, React.ElementType> = {
   TrendingUp,
   BarChart3,
   FileText,
+  CalendarDays,
+  MessageCircle,
+  Wallet,
+  HandCoins,
+  Truck,
+  BellRing,
 };
 
-interface SidebarProps {
-  activeNav: string;
-  onNavChange: (id: string) => void;
-}
-
 const navItems = [
-  { label: "Dashboard", icon: "LayoutDashboard", id: "dashboard" },
-  { label: "Inventory", icon: "Package", id: "inventory" },
-  { label: "Sales", icon: "TrendingUp", id: "sales" },
-  { label: "Analytics", icon: "BarChart3", id: "analytics" },
-  { label: "Audit Logs", icon: "FileText", id: "audit" },
+  { label: "Dashboard", icon: "LayoutDashboard", id: "dashboard", href: "/dashboard" },
+  { label: "Inventory", icon: "Package", id: "inventory", href: "/inventory" },
+  { label: "Sales", icon: "TrendingUp", id: "sales", href: "/sales" },
+  { label: "Delivery Board", icon: "Truck", id: "deliveries", href: "/deliveries" },
+  { label: "Analytics", icon: "BarChart3", id: "analytics", href: "/analytics" },
+  { label: "Calendar", icon: "CalendarDays", id: "calendar", href: "/calendar" },
+  { label: "Expenses", icon: "Wallet", id: "expenses", href: "/expenses" },
+  { label: "Reminders", icon: "BellRing", id: "reminders", href: "/reminders" },
+  { label: "Receivables", icon: "HandCoins", id: "receivables", href: "/receivables" },
+  { label: "Chat", icon: "MessageCircle", id: "chat", href: "/chat" },
+  { label: "Audit Logs", icon: "FileText", id: "audit", href: "/audit-logs" },
 ];
 
-export default function Sidebar({ activeNav, onNavChange }: SidebarProps) {
+export default function Sidebar() {
+  const pathname = usePathname();
+  const { profile } = useAppContext();
+
   return (
-    <aside
-      style={{
-        width: "220px",
-        minWidth: "220px",
-        backgroundColor: "#ffffff",
-        borderRight: "1px solid #e2e8f0",
-        display: "flex",
-        flexDirection: "column",
-        height: "100vh",
-        position: "fixed",
-        top: 0,
-        left: 0,
-        zIndex: 50,
-        fontFamily: "'Bricolage Grotesque', sans-serif",
-      }}
-    >
-      {/* Logo */}
-      <div
-        style={{
-          padding: "20px 20px 16px",
-          borderBottom: "1px solid #e2e8f0",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <div
-            style={{
-              width: "28px",
-              height: "28px",
-              background: "linear-gradient(135deg, #253b39, #3d6460)",
-              borderRadius: "4px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <ChevronRight size={16} color="#ffffff" strokeWidth={2.5} />
+    <aside className="fixed left-0 top-0 z-50 flex h-screen w-[220px] min-w-[220px] flex-col border-r border-slate-200 bg-white font-[Inter,sans-serif] dark:border-slate-800 dark:bg-slate-950">
+      <div className="border-b border-slate-200 px-5 pb-4 pt-5 dark:border-slate-800">
+        <div className="flex items-center gap-2">
+          <div className="flex h-7 w-7 items-center justify-center overflow-hidden rounded">
+            <img
+              src="/assets/ascend-logo.png"
+              alt="Ascend Tracker logo"
+              width={28}
+              height={28}
+              style={{ width: "28px", height: "28px", objectFit: "contain", display: "block" }}
+            />
           </div>
-          <span
-            style={{
-              fontSize: "16px",
-              fontWeight: 700,
-              color: "#1a1f2e",
-              letterSpacing: "-0.02em",
-            }}
-          >
+          <span className="text-base font-bold tracking-[-0.02em] text-slate-900 dark:text-slate-100">
             Ascend Tracker
           </span>
         </div>
       </div>
 
-      {/* Nav Items */}
-      <nav style={{ flex: 1, padding: "12px 10px" }}>
+      <nav className="flex-1 px-2.5 py-3">
         {navItems.map((item) => {
           const Icon = iconMap[item.icon];
-          const isActive = activeNav === item.id;
+          const isActive = pathname === item.href;
+
           return (
-            <button
+            <Link
               key={item.id}
-              onClick={() => onNavChange(item.id)}
-              style={{
-                width: "100%",
-                display: "flex",
-                alignItems: "center",
-                gap: "10px",
-                padding: "9px 12px",
-                marginBottom: "2px",
-                borderRadius: "4px",
-                border: "none",
-                background: isActive ? "rgba(37, 59, 57, 0.07)" : "transparent",
-                borderLeft: isActive
-                  ? "3px solid #253b39"
-                  : "3px solid transparent",
-                cursor: "pointer",
-                transition: "all 250ms cubic-bezier(0.4, 0, 0.2, 1)",
-                fontFamily: "'Bricolage Grotesque', sans-serif",
-                fontSize: "14px",
-                fontWeight: isActive ? 600 : 400,
-                color: isActive ? "#253b39" : "#64748b",
-                textAlign: "left",
-              }}
-              onMouseEnter={(e) => {
-                if (!isActive) {
-                  (e.currentTarget as HTMLElement).style.background =
-                    "rgba(37, 59, 57, 0.04)";
-                  (e.currentTarget as HTMLElement).style.color = "#1a1f2e";
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!isActive) {
-                  (e.currentTarget as HTMLElement).style.background =
-                    "transparent";
-                  (e.currentTarget as HTMLElement).style.color = "#64748b";
-                }
-              }}
+              href={item.href}
+              className={`mb-0.5 flex items-center gap-2.5 rounded px-3 py-2 text-sm transition-all duration-200 ${
+                isActive
+                  ? "border-l-[3px] border-l-[#253b39] bg-[#253b39]/10 font-semibold text-[#253b39] dark:bg-teal-400/10 dark:text-teal-200"
+                  : "border-l-[3px] border-l-transparent font-normal text-slate-500 hover:bg-slate-50 dark:text-slate-400 dark:hover:bg-slate-900"
+              }`}
             >
               <Icon size={16} strokeWidth={isActive ? 2.5 : 2} />
               {item.label}
-            </button>
+            </Link>
           );
         })}
       </nav>
 
-      {/* User Section */}
-      <div
-        style={{
-          padding: "16px 20px",
-          borderTop: "1px solid #e2e8f0",
-          display: "flex",
-          alignItems: "center",
-          gap: "10px",
-        }}
-      >
-        <div
-          style={{
-            width: "32px",
-            height: "32px",
-            borderRadius: "50%",
-            background: "linear-gradient(135deg, #253b39, #3d6460)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexShrink: 0,
-          }}
-        >
-          <span style={{ fontSize: "13px", fontWeight: 700, color: "#ffffff" }}>
-            JD
+      <div className="flex items-center gap-2.5 border-t border-slate-200 px-5 py-4 dark:border-slate-800">
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#253b39] to-[#3d6460]">
+          <span className="text-xs font-bold text-white">
+            {profile.name
+              .split(" ")
+              .map((part) => part[0])
+              .join("")
+              .slice(0, 2)
+              .toUpperCase()}
           </span>
         </div>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div
-            style={{
-              fontSize: "13px",
-              fontWeight: 600,
-              color: "#1a1f2e",
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}
-          >
-            Jane Doe
+        <div className="min-w-0 flex-1">
+          <div className="truncate text-sm font-semibold text-slate-900 dark:text-slate-100">
+            {profile.name}
           </div>
-          <div
-            style={{
-              fontSize: "11px",
-              color: "#ffffff",
-              background: "#253b39",
-              borderRadius: "2px",
-              padding: "1px 6px",
-              display: "inline-block",
-              fontWeight: 600,
-              marginTop: "2px",
-            }}
-          >
-            Admin
+          <div className="mt-0.5 inline-block rounded bg-[#253b39] px-1.5 py-0.5 text-[11px] font-semibold text-white">
+            {profile.role}
           </div>
         </div>
       </div>

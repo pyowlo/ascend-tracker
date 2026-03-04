@@ -3,6 +3,7 @@
 import React from "react";
 import { SaleRecord, MarketingTag } from "@/lib/dashboard-data";
 import { Eye, AlertTriangle } from "lucide-react";
+import { PH_TIME_ZONE } from "@/lib/time";
 
 const tagStyles: Record<
   MarketingTag,
@@ -27,13 +28,14 @@ function formatDate(dateStr: string) {
     month: "short",
     day: "numeric",
     year: "numeric",
+    timeZone: PH_TIME_ZONE,
   });
 }
 
 function formatCurrency(amount: number) {
-  return new Intl.NumberFormat("en-US", {
+  return new Intl.NumberFormat("en-PH", {
     style: "currency",
-    currency: "USD",
+    currency: "PHP",
   }).format(amount);
 }
 

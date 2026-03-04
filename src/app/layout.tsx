@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
+import { AppProvider } from "@/lib/app-context";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Ascend Tracker — Admin Dashboard",
+  title: "Ascend Tracker - Admin Dashboard",
   description: "Internal business admin dashboard for operations and sales teams",
 };
 
@@ -17,12 +18,12 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
           rel="stylesheet"
         />
       </head>
-      <body style={{ margin: 0, padding: 0, fontFamily: "'Bricolage Grotesque', sans-serif" }}>
-        {children}
+      <body style={{ margin: 0, padding: 0, fontFamily: "'Inter', sans-serif" }}>
+        <AppProvider>{children}</AppProvider>
       </body>
     </html>
   );

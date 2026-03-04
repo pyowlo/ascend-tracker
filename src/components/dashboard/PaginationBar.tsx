@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -36,7 +36,6 @@ export default function PaginationBar({
         fontFamily: "'Bricolage Grotesque', sans-serif",
       }}
     >
-      {/* Rows per page */}
       <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
         <span style={{ fontSize: "12px", color: "#64748b" }}>Rows per page:</span>
         <select
@@ -65,12 +64,10 @@ export default function PaginationBar({
         </select>
       </div>
 
-      {/* Row count info */}
       <span style={{ fontSize: "12px", color: "#64748b" }}>
-        {start}–{end} of {totalRows} rows
+        {start}-{end} of {totalRows} rows
       </span>
 
-      {/* Page navigation */}
       <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
         <button
           onClick={() => onPageChange(currentPage - 1)}

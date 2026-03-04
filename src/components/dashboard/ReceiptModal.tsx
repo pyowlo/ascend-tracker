@@ -2,6 +2,7 @@
 
 import React, { useEffect } from "react";
 import { SaleRecord, MarketingTag } from "@/lib/dashboard-data";
+import { PH_TIME_ZONE } from "@/lib/time";
 import { X, Receipt, AlertTriangle } from "lucide-react";
 
 const tagStyles: Record<MarketingTag, { bg: string; color: string }> = {
@@ -12,9 +13,9 @@ const tagStyles: Record<MarketingTag, { bg: string; color: string }> = {
 };
 
 function formatCurrency(amount: number) {
-  return new Intl.NumberFormat("en-US", {
+  return new Intl.NumberFormat("en-PH", {
     style: "currency",
-    currency: "USD",
+    currency: "PHP",
   }).format(amount);
 }
 
@@ -210,6 +211,7 @@ export default function ReceiptModal({ record, onClose }: ReceiptModalProps) {
                   year: "numeric",
                   month: "long",
                   day: "numeric",
+                  timeZone: PH_TIME_ZONE,
                 }),
               },
               { label: "Item Name", value: record.itemName },

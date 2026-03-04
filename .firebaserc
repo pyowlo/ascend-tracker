@@ -1,0 +1,8 @@
+{
+  "projects": {
+    "default": "ascend-tracker-27bcf",
+    "development": "ascend-tracker-27bcf"
+  },
+  "targets": {},
+  "etags": {}
+}

@@ -1,0 +1,249 @@
+[debug] [2026-03-03T12:32:58.337Z] ----------------------------------------------------------------------
+[debug] [2026-03-03T12:32:58.342Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\Pavilion\ascend-tracker\node_modules\firebase-tools\lib\bin\firebase.js deploy --only storage --project ascend-tracker-27bcf
+[debug] [2026-03-03T12:32:58.343Z] CLI Version:   15.8.0
+[debug] [2026-03-03T12:32:58.343Z] Platform:      win32
+[debug] [2026-03-03T12:32:58.343Z] Node Version:  v20.20.0
+[debug] [2026-03-03T12:32:58.344Z] Time:          Tue Mar 03 2026 20:32:58 GMT+0800 (Philippine Standard Time)
+[debug] [2026-03-03T12:32:58.344Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-03-03T12:33:01.465Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-03-03T12:33:01.466Z] > authorizing via signed-in user (piolojr.melvin@gmail.com)
+[debug] [2026-03-03T12:33:01.467Z] [iam] checking project ascend-tracker-27bcf for permissions ["firebase.projects.get","firebaserules.releases.create","firebaserules.releases.update","firebaserules.rulesets.create"]
+[debug] [2026-03-03T12:33:01.469Z] Checked if tokens are valid: true, expires at: 1772544045299
+[debug] [2026-03-03T12:33:01.469Z] Checked if tokens are valid: true, expires at: 1772544045299
+[debug] [2026-03-03T12:33:01.471Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/ascend-tracker-27bcf:testIamPermissions [none]
+[debug] [2026-03-03T12:33:01.471Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/ascend-tracker-27bcf:testIamPermissions  x-goog-user-project=ascend-tracker-27bcf
+[debug] [2026-03-03T12:33:01.471Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/ascend-tracker-27bcf:testIamPermissions {"permissions":["firebase.projects.get","firebaserules.releases.create","firebaserules.releases.update","firebaserules.rulesets.create"]}
+[debug] [2026-03-03T12:33:02.760Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/ascend-tracker-27bcf:testIamPermissions 200
+[debug] [2026-03-03T12:33:02.760Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/ascend-tracker-27bcf:testIamPermissions {"permissions":["firebase.projects.get","firebaserules.releases.create","firebaserules.releases.update","firebaserules.rulesets.create"]}
+[info] 
+[info] === Deploying to 'ascend-tracker-27bcf'...
+[info] 
+[info] i  deploying storage 
+[info] i  storage: ensuring required API firebasestorage.googleapis.com is enabled... 
+[debug] [2026-03-03T12:33:02.764Z] Checked if tokens are valid: true, expires at: 1772544045299
+[debug] [2026-03-03T12:33:02.764Z] Checked if tokens are valid: true, expires at: 1772544045299
+[debug] [2026-03-03T12:33:02.764Z] >>> [apiv2][query] GET https://firebasestorage.googleapis.com/v1alpha/projects/ascend-tracker-27bcf/defaultBucket [none]
+[debug] [2026-03-03T12:33:03.705Z] <<< [apiv2][status] GET https://firebasestorage.googleapis.com/v1alpha/projects/ascend-tracker-27bcf/defaultBucket 404
+[debug] [2026-03-03T12:33:03.705Z] <<< [apiv2][body] GET https://firebasestorage.googleapis.com/v1alpha/projects/ascend-tracker-27bcf/defaultBucket {"error":{"code":404,"message":"Requested entity was not found.","status":"NOT_FOUND"}}
+[error] 
+[error] Error: Firebase Storage has not been set up on project 'ascend-tracker-27bcf'. Go to https://console.firebase.google.com/project/ascend-tracker-27bcf/storage and click 'Get Started' to set up Firebase Storage.
+[debug] [2026-03-03T13:27:58.922Z] ----------------------------------------------------------------------
+[debug] [2026-03-03T13:27:58.925Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\Pavilion\ascend-tracker\node_modules\firebase-tools\lib\bin\firebase.js deploy --only firestore:rules --project ascend-tracker-27bcf
+[debug] [2026-03-03T13:27:58.926Z] CLI Version:   15.8.0
+[debug] [2026-03-03T13:27:58.926Z] Platform:      win32
+[debug] [2026-03-03T13:27:58.926Z] Node Version:  v20.20.0
+[debug] [2026-03-03T13:27:58.926Z] Time:          Tue Mar 03 2026 21:27:58 GMT+0800 (Philippine Standard Time)
+[debug] [2026-03-03T13:27:58.926Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-03-03T13:28:02.175Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-03-03T13:28:02.177Z] > authorizing via signed-in user (piolojr.melvin@gmail.com)
+[debug] [2026-03-03T13:28:02.177Z] [iam] checking project ascend-tracker-27bcf for permissions ["datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get"]
+[debug] [2026-03-03T13:28:02.179Z] Checked if tokens are valid: false, expires at: 1772544045299
+[debug] [2026-03-03T13:28:02.180Z] Checked if tokens are valid: false, expires at: 1772544045299
+[debug] [2026-03-03T13:28:02.181Z] > refreshing access token with scopes: []
+[debug] [2026-03-03T13:28:02.183Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-03-03T13:28:02.184Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-03-03T13:28:02.507Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2026-03-03T13:28:02.507Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-03-03T13:28:02.520Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/ascend-tracker-27bcf:testIamPermissions [none]
+[debug] [2026-03-03T13:28:02.520Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/ascend-tracker-27bcf:testIamPermissions  x-goog-user-project=ascend-tracker-27bcf
+[debug] [2026-03-03T13:28:02.521Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/ascend-tracker-27bcf:testIamPermissions {"permissions":["datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get"]}
+[debug] [2026-03-03T13:28:03.575Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/ascend-tracker-27bcf:testIamPermissions 200
+[debug] [2026-03-03T13:28:03.575Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/ascend-tracker-27bcf:testIamPermissions {"permissions":["datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get"]}
+[info] 
+[info] === Deploying to 'ascend-tracker-27bcf'...
+[info] 
+[info] i  deploying firestore 
+[info] i  firestore: ensuring required API firestore.googleapis.com is enabled... 
+[info] i  firestore: ensuring required API firestore.googleapis.com is enabled... 
+[debug] [2026-03-03T13:28:03.580Z] Checked if tokens are valid: true, expires at: 1772548081507
+[debug] [2026-03-03T13:28:03.580Z] Checked if tokens are valid: true, expires at: 1772548081507
+[debug] [2026-03-03T13:28:03.580Z] >>> [apiv2][query] GET https://firestore.googleapis.com/v1/projects/ascend-tracker-27bcf/databases/(default) [none]
+[debug] [2026-03-03T13:28:04.925Z] <<< [apiv2][status] GET https://firestore.googleapis.com/v1/projects/ascend-tracker-27bcf/databases/(default) 200
+[debug] [2026-03-03T13:28:04.925Z] <<< [apiv2][body] GET https://firestore.googleapis.com/v1/projects/ascend-tracker-27bcf/databases/(default) {"name":"projects/ascend-tracker-27bcf/databases/(default)","uid":"9c158a86-f1ed-41db-8624-f7971c86bd8c","createTime":"2026-03-03T05:23:12.913687Z","updateTime":"2026-03-03T05:23:12.913687Z","locationId":"nam5","type":"FIRESTORE_NATIVE","concurrencyMode":"PESSIMISTIC","versionRetentionPeriod":"3600s","earliestVersionTime":"2026-03-03T12:28:05.264124Z","appEngineIntegrationMode":"DISABLED","keyPrefix":"s","pointInTimeRecoveryEnablement":"POINT_IN_TIME_RECOVERY_DISABLED","deleteProtectionState":"DELETE_PROTECTION_DISABLED","databaseEdition":"STANDARD","freeTier":true,"realtimeUpdatesMode":"REALTIME_UPDATES_MODE_ENABLED","etag":"ILSMkuPqg5MDMMiDpomGg5MD"}
+[info] i  cloud.firestore: checking firestore.rules for compilation errors... 
+[debug] [2026-03-03T13:28:04.927Z] Checked if tokens are valid: true, expires at: 1772548081507
+[debug] [2026-03-03T13:28:04.927Z] Checked if tokens are valid: true, expires at: 1772548081507
+[debug] [2026-03-03T13:28:04.927Z] >>> [apiv2][query] POST https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf:test [none]
+[debug] [2026-03-03T13:28:04.927Z] >>> [apiv2][body] POST https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf:test [omitted]
+[debug] [2026-03-03T13:28:06.447Z] <<< [apiv2][status] POST https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf:test 200
+[debug] [2026-03-03T13:28:06.447Z] <<< [apiv2][body] POST https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf:test {}
+[info] +  cloud.firestore: rules file firestore.rules compiled successfully 
+[debug] [2026-03-03T13:28:06.449Z] Checked if tokens are valid: true, expires at: 1772548081507
+[debug] [2026-03-03T13:28:06.449Z] Checked if tokens are valid: true, expires at: 1772548081507
+[debug] [2026-03-03T13:28:06.451Z] >>> [apiv2][query] GET https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf/releases pageSize=10&pageToken=
+[debug] [2026-03-03T13:28:07.747Z] <<< [apiv2][status] GET https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf/releases 200
+[debug] [2026-03-03T13:28:07.747Z] <<< [apiv2][body] GET https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf/releases {"releases":[{"name":"projects/ascend-tracker-27bcf/releases/cloud.firestore","rulesetName":"projects/ascend-tracker-27bcf/rulesets/bdea6a1d-10e1-4e8c-b814-c77e7ce0eada","createTime":"2026-03-03T05:23:18.192578Z","updateTime":"2026-03-03T12:26:07.101217Z"}]}
+[debug] [2026-03-03T13:28:07.747Z] Checked if tokens are valid: true, expires at: 1772548081507
+[debug] [2026-03-03T13:28:07.747Z] Checked if tokens are valid: true, expires at: 1772548081507
+[debug] [2026-03-03T13:28:07.748Z] >>> [apiv2][query] GET https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf/rulesets/bdea6a1d-10e1-4e8c-b814-c77e7ce0eada [none]
+[debug] [2026-03-03T13:28:09.070Z] <<< [apiv2][status] GET https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf/rulesets/bdea6a1d-10e1-4e8c-b814-c77e7ce0eada 200
+[debug] [2026-03-03T13:28:09.070Z] <<< [apiv2][body] GET https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf/rulesets/bdea6a1d-10e1-4e8c-b814-c77e7ce0eada [omitted]
+[info] i  firestore: uploading rules firestore.rules... 
+[debug] [2026-03-03T13:28:09.072Z] Checked if tokens are valid: true, expires at: 1772548081507
+[debug] [2026-03-03T13:28:09.072Z] Checked if tokens are valid: true, expires at: 1772548081507
+[debug] [2026-03-03T13:28:09.073Z] >>> [apiv2][query] POST https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf/rulesets [none]
+[debug] [2026-03-03T13:28:09.073Z] >>> [apiv2][body] POST https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf/rulesets [omitted]
+[debug] [2026-03-03T13:28:10.358Z] <<< [apiv2][status] POST https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf/rulesets 200
+[debug] [2026-03-03T13:28:10.358Z] <<< [apiv2][body] POST https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf/rulesets {"name":"projects/ascend-tracker-27bcf/rulesets/a333e159-db43-44ec-b09a-f43886beea6b","source":{"files":[{"content":"rules_version = '2';\nservice cloud.firestore {\n  match /databases/{database}/documents {\n    match /inventory/{docId} {\n      allow read, write: if true;\n    }\n\n    match /sales/{docId} {\n      allow read, write: if true;\n    }\n  }\n}","name":"firestore.rules"}]},"createTime":"2026-03-03T13:28:10.670735Z","metadata":{"services":["cloud.firestore"]}}
+[debug] [2026-03-03T13:28:10.358Z] [rules] created ruleset projects/ascend-tracker-27bcf/rulesets/a333e159-db43-44ec-b09a-f43886beea6b
+[debug] [2026-03-03T13:28:10.359Z] [rules] releasing cloud.firestore/(default) with ruleset projects/ascend-tracker-27bcf/rulesets/a333e159-db43-44ec-b09a-f43886beea6b
+[debug] [2026-03-03T13:28:10.359Z] Checked if tokens are valid: true, expires at: 1772548081507
+[debug] [2026-03-03T13:28:10.360Z] Checked if tokens are valid: true, expires at: 1772548081507
+[debug] [2026-03-03T13:28:10.360Z] >>> [apiv2][query] PATCH https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf/releases/cloud.firestore/(default) [none]
+[debug] [2026-03-03T13:28:10.360Z] >>> [apiv2][body] PATCH https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf/releases/cloud.firestore/(default) {"release":{"name":"projects/ascend-tracker-27bcf/releases/cloud.firestore/(default)","rulesetName":"projects/ascend-tracker-27bcf/rulesets/a333e159-db43-44ec-b09a-f43886beea6b"}}
+[debug] [2026-03-03T13:28:11.648Z] <<< [apiv2][status] PATCH https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf/releases/cloud.firestore/(default) 200
+[debug] [2026-03-03T13:28:11.648Z] <<< [apiv2][body] PATCH https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf/releases/cloud.firestore/(default) {"name":"projects/ascend-tracker-27bcf/releases/cloud.firestore","rulesetName":"projects/ascend-tracker-27bcf/rulesets/a333e159-db43-44ec-b09a-f43886beea6b","createTime":"2026-03-03T05:23:18.192578Z","updateTime":"2026-03-03T13:28:11.960186Z"}
+[debug] [2026-03-03T13:28:11.648Z] [rules] updated release projects/ascend-tracker-27bcf/releases/cloud.firestore
+[info] +  firestore: released rules firestore.rules to cloud.firestore 
+[info] 
+[info] +  Deploy complete! 
+[info] 
+[info] Project Console: https://console.firebase.google.com/project/ascend-tracker-27bcf/overview
+[debug] [2026-03-03T14:54:47.078Z] ----------------------------------------------------------------------
+[debug] [2026-03-03T14:54:47.081Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\Pavilion\ascend-tracker\node_modules\firebase-tools\lib\bin\firebase.js deploy --only firestore:rules --project ascend-tracker-27bcf
+[debug] [2026-03-03T14:54:47.082Z] CLI Version:   15.8.0
+[debug] [2026-03-03T14:54:47.082Z] Platform:      win32
+[debug] [2026-03-03T14:54:47.082Z] Node Version:  v20.20.0
+[debug] [2026-03-03T14:54:47.082Z] Time:          Tue Mar 03 2026 22:54:47 GMT+0800 (Philippine Standard Time)
+[debug] [2026-03-03T14:54:47.082Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-03-03T14:54:50.454Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-03-03T14:54:50.456Z] > authorizing via signed-in user (piolojr.melvin@gmail.com)
+[debug] [2026-03-03T14:54:50.457Z] [iam] checking project ascend-tracker-27bcf for permissions ["datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get"]
+[debug] [2026-03-03T14:54:50.459Z] Checked if tokens are valid: false, expires at: 1772548081507
+[debug] [2026-03-03T14:54:50.459Z] Checked if tokens are valid: false, expires at: 1772548081507
+[debug] [2026-03-03T14:54:50.460Z] > refreshing access token with scopes: []
+[debug] [2026-03-03T14:54:50.463Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-03-03T14:54:50.463Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-03-03T14:54:50.796Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2026-03-03T14:54:50.796Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-03-03T14:54:50.809Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/ascend-tracker-27bcf:testIamPermissions [none]
+[debug] [2026-03-03T14:54:50.809Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/ascend-tracker-27bcf:testIamPermissions  x-goog-user-project=ascend-tracker-27bcf
+[debug] [2026-03-03T14:54:50.809Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/ascend-tracker-27bcf:testIamPermissions {"permissions":["datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get"]}
+[debug] [2026-03-03T14:54:51.866Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/ascend-tracker-27bcf:testIamPermissions 200
+[debug] [2026-03-03T14:54:51.867Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/ascend-tracker-27bcf:testIamPermissions {"permissions":["datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get"]}
+[info] 
+[info] === Deploying to 'ascend-tracker-27bcf'...
+[info] 
+[info] i  deploying firestore 
+[info] i  firestore: ensuring required API firestore.googleapis.com is enabled... 
+[info] i  firestore: ensuring required API firestore.googleapis.com is enabled... 
+[debug] [2026-03-03T14:54:51.871Z] Checked if tokens are valid: true, expires at: 1772553289797
+[debug] [2026-03-03T14:54:51.871Z] Checked if tokens are valid: true, expires at: 1772553289797
+[debug] [2026-03-03T14:54:51.871Z] >>> [apiv2][query] GET https://firestore.googleapis.com/v1/projects/ascend-tracker-27bcf/databases/(default) [none]
+[debug] [2026-03-03T14:54:53.228Z] <<< [apiv2][status] GET https://firestore.googleapis.com/v1/projects/ascend-tracker-27bcf/databases/(default) 200
+[debug] [2026-03-03T14:54:53.228Z] <<< [apiv2][body] GET https://firestore.googleapis.com/v1/projects/ascend-tracker-27bcf/databases/(default) {"name":"projects/ascend-tracker-27bcf/databases/(default)","uid":"9c158a86-f1ed-41db-8624-f7971c86bd8c","createTime":"2026-03-03T05:23:12.913687Z","updateTime":"2026-03-03T05:23:12.913687Z","locationId":"nam5","type":"FIRESTORE_NATIVE","concurrencyMode":"PESSIMISTIC","versionRetentionPeriod":"3600s","earliestVersionTime":"2026-03-03T13:54:53.447695Z","appEngineIntegrationMode":"DISABLED","keyPrefix":"s","pointInTimeRecoveryEnablement":"POINT_IN_TIME_RECOVERY_DISABLED","deleteProtectionState":"DELETE_PROTECTION_DISABLED","databaseEdition":"STANDARD","freeTier":true,"realtimeUpdatesMode":"REALTIME_UPDATES_MODE_ENABLED","etag":"IK63zJb+g5MDMMiDpomGg5MD"}
+[info] i  cloud.firestore: checking firestore.rules for compilation errors... 
+[debug] [2026-03-03T14:54:53.230Z] Checked if tokens are valid: true, expires at: 1772553289797
+[debug] [2026-03-03T14:54:53.230Z] Checked if tokens are valid: true, expires at: 1772553289797
+[debug] [2026-03-03T14:54:53.230Z] >>> [apiv2][query] POST https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf:test [none]
+[debug] [2026-03-03T14:54:53.230Z] >>> [apiv2][body] POST https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf:test [omitted]
+[debug] [2026-03-03T14:54:54.541Z] <<< [apiv2][status] POST https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf:test 200
+[debug] [2026-03-03T14:54:54.541Z] <<< [apiv2][body] POST https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf:test {}
+[info] +  cloud.firestore: rules file firestore.rules compiled successfully 
+[debug] [2026-03-03T14:54:54.542Z] Checked if tokens are valid: true, expires at: 1772553289797
+[debug] [2026-03-03T14:54:54.543Z] Checked if tokens are valid: true, expires at: 1772553289797
+[debug] [2026-03-03T14:54:54.544Z] >>> [apiv2][query] GET https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf/releases pageSize=10&pageToken=
+[debug] [2026-03-03T14:54:55.669Z] <<< [apiv2][status] GET https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf/releases 200
+[debug] [2026-03-03T14:54:55.669Z] <<< [apiv2][body] GET https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf/releases {"releases":[{"name":"projects/ascend-tracker-27bcf/releases/cloud.firestore","rulesetName":"projects/ascend-tracker-27bcf/rulesets/a333e159-db43-44ec-b09a-f43886beea6b","createTime":"2026-03-03T05:23:18.192578Z","updateTime":"2026-03-03T13:28:11.960186Z"}]}
+[debug] [2026-03-03T14:54:55.669Z] Checked if tokens are valid: true, expires at: 1772553289797
+[debug] [2026-03-03T14:54:55.669Z] Checked if tokens are valid: true, expires at: 1772553289797
+[debug] [2026-03-03T14:54:55.669Z] >>> [apiv2][query] GET https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf/rulesets/a333e159-db43-44ec-b09a-f43886beea6b [none]
+[debug] [2026-03-03T14:54:56.134Z] <<< [apiv2][status] GET https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf/rulesets/a333e159-db43-44ec-b09a-f43886beea6b 200
+[debug] [2026-03-03T14:54:56.134Z] <<< [apiv2][body] GET https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf/rulesets/a333e159-db43-44ec-b09a-f43886beea6b [omitted]
+[info] i  firestore: uploading rules firestore.rules... 
+[debug] [2026-03-03T14:54:56.135Z] Checked if tokens are valid: true, expires at: 1772553289797
+[debug] [2026-03-03T14:54:56.136Z] Checked if tokens are valid: true, expires at: 1772553289797
+[debug] [2026-03-03T14:54:56.136Z] >>> [apiv2][query] POST https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf/rulesets [none]
+[debug] [2026-03-03T14:54:56.136Z] >>> [apiv2][body] POST https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf/rulesets [omitted]
+[debug] [2026-03-03T14:54:57.419Z] <<< [apiv2][status] POST https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf/rulesets 200
+[debug] [2026-03-03T14:54:57.419Z] <<< [apiv2][body] POST https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf/rulesets {"name":"projects/ascend-tracker-27bcf/rulesets/5e7819d8-fe8e-4646-91b8-ec0c6c2a6e3f","source":{"files":[{"content":"rules_version = '2';\nservice cloud.firestore {\n  match /databases/{database}/documents {\n    match /inventory/{docId} {\n      allow read, write: if true;\n    }\n\n    match /sales/{docId} {\n      allow read, write: if true;\n    }\n\n    match /schedules/{docId} {\n      allow read, write: if true;\n    }\n  }\n}\n","name":"firestore.rules"}]},"createTime":"2026-03-03T14:54:57.579391Z","metadata":{"services":["cloud.firestore"]}}
+[debug] [2026-03-03T14:54:57.419Z] [rules] created ruleset projects/ascend-tracker-27bcf/rulesets/5e7819d8-fe8e-4646-91b8-ec0c6c2a6e3f
+[debug] [2026-03-03T14:54:57.420Z] [rules] releasing cloud.firestore/(default) with ruleset projects/ascend-tracker-27bcf/rulesets/5e7819d8-fe8e-4646-91b8-ec0c6c2a6e3f
+[debug] [2026-03-03T14:54:57.420Z] Checked if tokens are valid: true, expires at: 1772553289797
+[debug] [2026-03-03T14:54:57.420Z] Checked if tokens are valid: true, expires at: 1772553289797
+[debug] [2026-03-03T14:54:57.420Z] >>> [apiv2][query] PATCH https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf/releases/cloud.firestore/(default) [none]
+[debug] [2026-03-03T14:54:57.421Z] >>> [apiv2][body] PATCH https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf/releases/cloud.firestore/(default) {"release":{"name":"projects/ascend-tracker-27bcf/releases/cloud.firestore/(default)","rulesetName":"projects/ascend-tracker-27bcf/rulesets/5e7819d8-fe8e-4646-91b8-ec0c6c2a6e3f"}}
+[debug] [2026-03-03T14:54:58.560Z] <<< [apiv2][status] PATCH https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf/releases/cloud.firestore/(default) 200
+[debug] [2026-03-03T14:54:58.560Z] <<< [apiv2][body] PATCH https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf/releases/cloud.firestore/(default) {"name":"projects/ascend-tracker-27bcf/releases/cloud.firestore","rulesetName":"projects/ascend-tracker-27bcf/rulesets/5e7819d8-fe8e-4646-91b8-ec0c6c2a6e3f","createTime":"2026-03-03T05:23:18.192578Z","updateTime":"2026-03-03T14:54:58.752611Z"}
+[debug] [2026-03-03T14:54:58.560Z] [rules] updated release projects/ascend-tracker-27bcf/releases/cloud.firestore
+[info] +  firestore: released rules firestore.rules to cloud.firestore 
+[info] 
+[info] +  Deploy complete! 
+[info] 
+[info] Project Console: https://console.firebase.google.com/project/ascend-tracker-27bcf/overview
+[debug] [2026-03-04T01:09:00.831Z] ----------------------------------------------------------------------
+[debug] [2026-03-04T01:09:00.835Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\Pavilion\ascend-tracker\node_modules\firebase-tools\lib\bin\firebase.js deploy --only firestore:rules --project ascend-tracker-27bcf
+[debug] [2026-03-04T01:09:00.835Z] CLI Version:   15.8.0
+[debug] [2026-03-04T01:09:00.836Z] Platform:      win32
+[debug] [2026-03-04T01:09:00.836Z] Node Version:  v20.20.0
+[debug] [2026-03-04T01:09:00.836Z] Time:          Wed Mar 04 2026 09:09:00 GMT+0800 (Philippine Standard Time)
+[debug] [2026-03-04T01:09:00.836Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-03-04T01:09:04.303Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-03-04T01:09:04.304Z] > authorizing via signed-in user (piolojr.melvin@gmail.com)
+[debug] [2026-03-04T01:09:04.304Z] [iam] checking project ascend-tracker-27bcf for permissions ["datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get"]
+[debug] [2026-03-04T01:09:04.306Z] Checked if tokens are valid: false, expires at: 1772553289797
+[debug] [2026-03-04T01:09:04.306Z] Checked if tokens are valid: false, expires at: 1772553289797
+[debug] [2026-03-04T01:09:04.307Z] > refreshing access token with scopes: []
+[debug] [2026-03-04T01:09:04.310Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-03-04T01:09:04.310Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-03-04T01:09:04.636Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2026-03-04T01:09:04.637Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-03-04T01:09:04.651Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/ascend-tracker-27bcf:testIamPermissions [none]
+[debug] [2026-03-04T01:09:04.652Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/ascend-tracker-27bcf:testIamPermissions  x-goog-user-project=ascend-tracker-27bcf
+[debug] [2026-03-04T01:09:04.652Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/ascend-tracker-27bcf:testIamPermissions {"permissions":["datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get"]}
+[debug] [2026-03-04T01:09:05.749Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/ascend-tracker-27bcf:testIamPermissions 200
+[debug] [2026-03-04T01:09:05.749Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/ascend-tracker-27bcf:testIamPermissions {"permissions":["datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get"]}
+[info] 
+[info] === Deploying to 'ascend-tracker-27bcf'...
+[info] 
+[info] i  deploying firestore 
+[info] i  firestore: ensuring required API firestore.googleapis.com is enabled... 
+[info] i  firestore: ensuring required API firestore.googleapis.com is enabled... 
+[debug] [2026-03-04T01:09:05.754Z] Checked if tokens are valid: true, expires at: 1772590143637
+[debug] [2026-03-04T01:09:05.754Z] Checked if tokens are valid: true, expires at: 1772590143637
+[debug] [2026-03-04T01:09:05.754Z] >>> [apiv2][query] GET https://firestore.googleapis.com/v1/projects/ascend-tracker-27bcf/databases/(default) [none]
+[debug] [2026-03-04T01:09:06.408Z] <<< [apiv2][status] GET https://firestore.googleapis.com/v1/projects/ascend-tracker-27bcf/databases/(default) 200
+[debug] [2026-03-04T01:09:06.408Z] <<< [apiv2][body] GET https://firestore.googleapis.com/v1/projects/ascend-tracker-27bcf/databases/(default) {"name":"projects/ascend-tracker-27bcf/databases/(default)","uid":"9c158a86-f1ed-41db-8624-f7971c86bd8c","createTime":"2026-03-03T05:23:12.913687Z","updateTime":"2026-03-03T05:23:12.913687Z","locationId":"nam5","type":"FIRESTORE_NATIVE","concurrencyMode":"PESSIMISTIC","versionRetentionPeriod":"3600s","earliestVersionTime":"2026-03-04T00:09:09.264141Z","appEngineIntegrationMode":"DISABLED","keyPrefix":"s","pointInTimeRecoveryEnablement":"POINT_IN_TIME_RECOVERY_DISABLED","deleteProtectionState":"DELETE_PROTECTION_DISABLED","databaseEdition":"STANDARD","freeTier":true,"realtimeUpdatesMode":"REALTIME_UPDATES_MODE_ENABLED","etag":"IIr46LyHhZMDMMiDpomGg5MD"}
+[info] i  cloud.firestore: checking firestore.rules for compilation errors... 
+[debug] [2026-03-04T01:09:06.410Z] Checked if tokens are valid: true, expires at: 1772590143637
+[debug] [2026-03-04T01:09:06.410Z] Checked if tokens are valid: true, expires at: 1772590143637
+[debug] [2026-03-04T01:09:06.410Z] >>> [apiv2][query] POST https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf:test [none]
+[debug] [2026-03-04T01:09:06.410Z] >>> [apiv2][body] POST https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf:test [omitted]
+[debug] [2026-03-04T01:09:07.050Z] <<< [apiv2][status] POST https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf:test 200
+[debug] [2026-03-04T01:09:07.051Z] <<< [apiv2][body] POST https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf:test {}
+[info] +  cloud.firestore: rules file firestore.rules compiled successfully 
+[debug] [2026-03-04T01:09:07.052Z] Checked if tokens are valid: true, expires at: 1772590143637
+[debug] [2026-03-04T01:09:07.053Z] Checked if tokens are valid: true, expires at: 1772590143637
+[debug] [2026-03-04T01:09:07.054Z] >>> [apiv2][query] GET https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf/releases pageSize=10&pageToken=
+[debug] [2026-03-04T01:09:08.129Z] <<< [apiv2][status] GET https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf/releases 200
+[debug] [2026-03-04T01:09:08.129Z] <<< [apiv2][body] GET https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf/releases {"releases":[{"name":"projects/ascend-tracker-27bcf/releases/cloud.firestore","rulesetName":"projects/ascend-tracker-27bcf/rulesets/5e7819d8-fe8e-4646-91b8-ec0c6c2a6e3f","createTime":"2026-03-03T05:23:18.192578Z","updateTime":"2026-03-03T14:54:58.752611Z"}]}
+[debug] [2026-03-04T01:09:08.130Z] Checked if tokens are valid: true, expires at: 1772590143637
+[debug] [2026-03-04T01:09:08.130Z] Checked if tokens are valid: true, expires at: 1772590143637
+[debug] [2026-03-04T01:09:08.130Z] >>> [apiv2][query] GET https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf/rulesets/5e7819d8-fe8e-4646-91b8-ec0c6c2a6e3f [none]
+[debug] [2026-03-04T01:09:09.190Z] <<< [apiv2][status] GET https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf/rulesets/5e7819d8-fe8e-4646-91b8-ec0c6c2a6e3f 200
+[debug] [2026-03-04T01:09:09.190Z] <<< [apiv2][body] GET https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf/rulesets/5e7819d8-fe8e-4646-91b8-ec0c6c2a6e3f [omitted]
+[info] i  firestore: uploading rules firestore.rules... 
+[debug] [2026-03-04T01:09:09.192Z] Checked if tokens are valid: true, expires at: 1772590143637
+[debug] [2026-03-04T01:09:09.192Z] Checked if tokens are valid: true, expires at: 1772590143637
+[debug] [2026-03-04T01:09:09.192Z] >>> [apiv2][query] POST https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf/rulesets [none]
+[debug] [2026-03-04T01:09:09.193Z] >>> [apiv2][body] POST https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf/rulesets [omitted]
+[debug] [2026-03-04T01:09:09.646Z] <<< [apiv2][status] POST https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf/rulesets 200
+[debug] [2026-03-04T01:09:09.646Z] <<< [apiv2][body] POST https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf/rulesets {"name":"projects/ascend-tracker-27bcf/rulesets/5597e1d9-ccb6-4477-b6bb-fd596722446f","source":{"files":[{"content":"rules_version = '2';\nservice cloud.firestore {\n  match /databases/{database}/documents {\n    match /inventory/{docId} {\n      allow read, write: if true;\n    }\n\n    match /sales/{docId} {\n      allow read, write: if true;\n    }\n\n    match /schedules/{docId} {\n      allow read, write: if true;\n    }\n\n    match /expenses/{docId} {\n      allow read, write: if true;\n    }\n  }\n}\n","name":"firestore.rules"}]},"createTime":"2026-03-04T01:09:12.471263Z","metadata":{"services":["cloud.firestore"]}}
+[debug] [2026-03-04T01:09:09.646Z] [rules] created ruleset projects/ascend-tracker-27bcf/rulesets/5597e1d9-ccb6-4477-b6bb-fd596722446f
+[debug] [2026-03-04T01:09:09.647Z] [rules] releasing cloud.firestore/(default) with ruleset projects/ascend-tracker-27bcf/rulesets/5597e1d9-ccb6-4477-b6bb-fd596722446f
+[debug] [2026-03-04T01:09:09.647Z] Checked if tokens are valid: true, expires at: 1772590143637
+[debug] [2026-03-04T01:09:09.647Z] Checked if tokens are valid: true, expires at: 1772590143637
+[debug] [2026-03-04T01:09:09.648Z] >>> [apiv2][query] PATCH https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf/releases/cloud.firestore/(default) [none]
+[debug] [2026-03-04T01:09:09.648Z] >>> [apiv2][body] PATCH https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf/releases/cloud.firestore/(default) {"release":{"name":"projects/ascend-tracker-27bcf/releases/cloud.firestore/(default)","rulesetName":"projects/ascend-tracker-27bcf/rulesets/5597e1d9-ccb6-4477-b6bb-fd596722446f"}}
+[debug] [2026-03-04T01:09:10.732Z] <<< [apiv2][status] PATCH https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf/releases/cloud.firestore/(default) 200
+[debug] [2026-03-04T01:09:10.733Z] <<< [apiv2][body] PATCH https://firebaserules.googleapis.com/v1/projects/ascend-tracker-27bcf/releases/cloud.firestore/(default) {"name":"projects/ascend-tracker-27bcf/releases/cloud.firestore","rulesetName":"projects/ascend-tracker-27bcf/rulesets/5597e1d9-ccb6-4477-b6bb-fd596722446f","createTime":"2026-03-03T05:23:18.192578Z","updateTime":"2026-03-04T01:09:13.562122Z"}
+[debug] [2026-03-04T01:09:10.733Z] [rules] updated release projects/ascend-tracker-27bcf/releases/cloud.firestore
+[info] +  firestore: released rules firestore.rules to cloud.firestore 
+[info] 
+[info] +  Deploy complete! 
+[info] 
+[info] Project Console: https://console.firebase.google.com/project/ascend-tracker-27bcf/overview
