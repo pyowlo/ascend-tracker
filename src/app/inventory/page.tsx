@@ -567,7 +567,49 @@ export default function InventoryPage() {
             {forecast.criticalCount > 0 ? ` ${forecast.criticalCount} item(s) need urgent restock.` : ""}
           </p>
         </div>
-        <div className="overflow-x-auto">
+        <div className="space-y-3 p-4 md:hidden">
+          {(loading || loadingSales) && (
+            <div className="rounded-md border border-slate-200 bg-slate-50 p-3 text-sm text-slate-500">
+              Loading forecast...
+            </div>
+          )}
+          {!loading && !loadingSales && forecast.rows.length === 0 && (
+            <div className="rounded-md border border-slate-200 bg-slate-50 p-3 text-sm text-slate-500">
+              No forecast data yet.
+            </div>
+          )}
+          {!loading &&
+            !loadingSales &&
+            forecast.rows.map((row) => (
+              <article key={`mobile-forecast-${row.itemId}`} className="rounded-md border border-slate-200 bg-white p-3">
+                <p className="text-sm font-semibold text-slate-900">{row.itemName}</p>
+                <p className="text-xs text-slate-500">{row.itemCode}</p>
+                <div className="mt-2 grid grid-cols-2 gap-2 text-xs text-slate-700">
+                  <div>In Stock: <span className="font-semibold">{row.quantity}</span></div>
+                  <div>Sold 30d: <span className="font-semibold">{row.soldLast30Days}</span></div>
+                  <div>Avg/Day: <span className="font-semibold">{row.avgDailySold.toFixed(2)}</span></div>
+                  <div>Days Left: <span className="font-semibold">{row.daysUntilStockout !== null ? row.daysUntilStockout.toFixed(1) : "-"}</span></div>
+                </div>
+                <p className="mt-2 text-xs text-slate-600">
+                  Projected: {row.projectedStockoutDate ? formatDateInPH(row.projectedStockoutDate) : "-"}
+                </p>
+                <span
+                  className={`mt-2 inline-flex rounded px-2 py-1 text-[11px] font-semibold uppercase ${
+                    row.risk === "critical"
+                      ? "bg-red-100 text-red-700"
+                      : row.risk === "warning"
+                      ? "bg-amber-100 text-amber-700"
+                      : row.risk === "stable"
+                      ? "bg-emerald-100 text-emerald-700"
+                      : "bg-slate-100 text-slate-600"
+                  }`}
+                >
+                  {row.risk}
+                </span>
+              </article>
+            ))}
+        </div>
+        <div className="hidden overflow-x-auto md:block">
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
               <tr
@@ -1020,7 +1062,52 @@ export default function InventoryPage() {
             Live inventory records from Firebase.
           </p>
         </div>
-        <div className="overflow-x-auto">
+        <div className="space-y-3 p-4 md:hidden">
+          {loading && (
+            <div className="rounded-md border border-slate-200 bg-slate-50 p-3 text-sm text-slate-500">
+              Loading inventory...
+            </div>
+          )}
+          {!loading && items.length === 0 && (
+            <div className="rounded-md border border-slate-200 bg-slate-50 p-3 text-sm text-slate-500">
+              No inventory records yet. Add your first item above.
+            </div>
+          )}
+          {!loading &&
+            items.map((row) => (
+              <article key={`mobile-ledger-${row.id}`} className="rounded-md border border-slate-200 bg-white p-3">
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <p className="text-sm font-semibold text-slate-900">{row.itemName}</p>
+                    <p className="text-xs text-slate-500">{row.itemCode}</p>
+                  </div>
+                  <p className="text-sm font-bold text-slate-900">Qty: {row.quantity}</p>
+                </div>
+                <div className="mt-2 space-y-1 text-xs text-slate-700">
+                  <p>Batch: <span className="font-semibold">{row.batchNumber || "-"}</span></p>
+                  <p>Package: <span className="font-semibold">{row.packageItems.length > 0 ? row.packageItems.join(" + ") : "-"}</span></p>
+                  <p>SRP: <span className="font-semibold">{formatCurrency(row.suggestedRetailPrice)}</span></p>
+                  <p>Reseller: <span className="font-semibold">{formatCurrency(row.resellerPrice)}</span></p>
+                  <p>Discounted: <span className="font-semibold">{formatCurrency(row.discountedPrice)}</span></p>
+                </div>
+                <div className="mt-3 flex gap-2">
+                  <button
+                    onClick={() => startEdit(row)}
+                    className="rounded-md border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 transition-colors duration-200 hover:bg-slate-50"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => removeItem(row.id)}
+                    className="rounded-md border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-700 transition-colors duration-200 hover:bg-red-100"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </article>
+            ))}
+        </div>
+        <div className="hidden overflow-x-auto md:block">
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr

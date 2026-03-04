@@ -7,6 +7,11 @@ export const metadata: Metadata = {
   description: "Internal business admin dashboard for operations and sales teams",
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -28,4 +33,3 @@ export default function RootLayout({
     </html>
   );
 }
-
