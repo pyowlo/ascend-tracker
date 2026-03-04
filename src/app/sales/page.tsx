@@ -495,8 +495,9 @@ export default function SalesPage() {
     setNotice(null);
     const inventory = inventoryItems.find((item) => item.id === sale.inventoryId);
     if (!inventory) {
-      setError("Linked inventory item not found.");
-      return;
+      setNotice(
+        "Linked inventory item no longer exists. Sale will be deleted without stock rollback."
+      );
     }
 
     setSubmitting(true);
@@ -509,10 +510,12 @@ export default function SalesPage() {
         }
       }
       await deleteDoc(doc(db, "sales", sale.id));
-      await updateDoc(doc(db, "inventory", sale.inventoryId), {
-        quantity: inventory.quantity + sale.quantity,
-        updatedAt: serverTimestamp(),
-      });
+      if (inventory) {
+        await updateDoc(doc(db, "inventory", sale.inventoryId), {
+          quantity: inventory.quantity + sale.quantity,
+          updatedAt: serverTimestamp(),
+        });
+      }
     } catch {
       setError("Failed to delete sale.");
     } finally {
@@ -653,7 +656,7 @@ export default function SalesPage() {
       title="Sales Dashboard"
       subtitle="Manual sales entry and fulfillment tracking"
     >
-      <div style={{ display: "flex", gap: "16px", marginBottom: "24px" }}>
+      <div className="mb-6 grid grid-cols-1 gap-4 lg:grid-cols-3">
         {[
           { label: "Total Revenue", value: formatCurrency(metrics.revenue) },
           { label: "Items Sold", value: metrics.sold.toLocaleString("en-US") },
@@ -662,7 +665,6 @@ export default function SalesPage() {
           <div
             key={card.label}
             style={{
-              flex: 1,
               backgroundColor: "#ffffff",
               border: "1px solid #e2e8f0",
               borderRadius: "4px",

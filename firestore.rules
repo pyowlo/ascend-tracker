@@ -1,20 +1,28 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
     match /inventory/{docId} {
-      allow read, write: if true;
+      allow read, write: if isSignedIn();
     }
 
     match /sales/{docId} {
-      allow read, write: if true;
+      allow read, write: if isSignedIn();
     }
 
     match /schedules/{docId} {
-      allow read, write: if true;
+      allow read, write: if isSignedIn();
     }
 
     match /expenses/{docId} {
-      allow read, write: if true;
+      allow read, write: if isSignedIn();
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 }

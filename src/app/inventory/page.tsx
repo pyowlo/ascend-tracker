@@ -3,6 +3,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import DashboardShell from "@/components/dashboard/DashboardShell";
 import { db } from "@/lib/firebase";
+import { formatDateInPH, getCurrentPHDateKey } from "@/lib/time";
 import {
   addDoc,
   collection,
@@ -46,6 +47,31 @@ type ProductOption = {
   requiredPackageItems: string[];
 };
 
+type SaleStatus = "pending" | "delivered" | "returned";
+
+type SaleHistory = {
+  id: string;
+  itemCode: string;
+  itemName: string;
+  quantity: number;
+  status: SaleStatus;
+  saleDate: string;
+};
+
+type ForecastRisk = "critical" | "warning" | "stable" | "unknown";
+
+type ForecastRow = {
+  itemId: string;
+  itemCode: string;
+  itemName: string;
+  quantity: number;
+  soldLast30Days: number;
+  avgDailySold: number;
+  daysUntilStockout: number | null;
+  projectedStockoutDate: string | null;
+  risk: ForecastRisk;
+};
+
 const productOptions: ProductOption[] = [
   {
     itemName: "Ascend Vitality (Tirzepatide) - 20mg",
@@ -83,13 +109,33 @@ function formatCurrency(amount: number) {
   }).format(amount);
 }
 
+function toMs(dateValue: string) {
+  if (!dateValue) return 0;
+  const ms = new Date(dateValue).getTime();
+  return Number.isNaN(ms) ? 0 : ms;
+}
+
+function addDaysToDateKey(dateKey: string, days: number) {
+  const start = Date.parse(`${dateKey}T00:00:00+08:00`);
+  if (Number.isNaN(start)) return "";
+  const date = new Date(start + days * 86_400_000);
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Manila",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(date);
+}
+
 export default function InventoryPage() {
   const [items, setItems] = useState<InventoryItem[]>([]);
+  const [sales, setSales] = useState<SaleHistory[]>([]);
   const [form, setForm] = useState<InventoryForm>(emptyForm);
   const [editForm, setEditForm] = useState<InventoryForm>(emptyForm);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [loadingSales, setLoadingSales] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -148,6 +194,31 @@ export default function InventoryPage() {
     return () => unsubscribe();
   }, []);
 
+  useEffect(() => {
+    const unsubscribe = onSnapshot(
+      query(collection(db, "sales")),
+      (snapshot) => {
+        const rows: SaleHistory[] = snapshot.docs.map((entry) => {
+          const data = entry.data();
+          return {
+            id: entry.id,
+            itemCode: String(data.itemCode ?? ""),
+            itemName: String(data.itemName ?? ""),
+            quantity: Number(data.quantity ?? 0),
+            status: ((data.status === "pending_payment" ? "pending" : data.status) as SaleStatus) ?? "pending",
+            saleDate: String(data.saleDate ?? ""),
+          };
+        });
+        setSales(rows);
+        setLoadingSales(false);
+      },
+      () => {
+        setLoadingSales(false);
+      }
+    );
+    return () => unsubscribe();
+  }, []);
+
   const stats = useMemo(() => {
     return {
       total: items.length,
@@ -155,6 +226,70 @@ export default function InventoryPage() {
       out: items.filter((item) => item.quantity === 0).length,
     };
   }, [items]);
+
+  const forecast = useMemo(() => {
+    const todayKey = getCurrentPHDateKey();
+    const nowMs = Date.parse(`${todayKey}T23:59:59+08:00`);
+    const lookbackDays = 30;
+    const windowStart = nowMs - lookbackDays * 86_400_000;
+
+    const deliveredRecent = sales.filter((sale) => {
+      const ms = toMs(sale.saleDate);
+      return sale.status === "delivered" && ms >= windowStart && ms <= nowMs;
+    });
+
+    const rows: ForecastRow[] = items.map((item) => {
+      const soldLast30Days = deliveredRecent
+        .filter((sale) => sale.itemCode === item.itemCode || sale.itemName === item.itemName)
+        .reduce((sum, sale) => sum + sale.quantity, 0);
+      const avgDailySold = soldLast30Days / lookbackDays;
+      const daysUntilStockout = avgDailySold > 0 ? item.quantity / avgDailySold : null;
+      const projectedStockoutDate =
+        daysUntilStockout !== null ? addDaysToDateKey(todayKey, Math.ceil(daysUntilStockout)) : null;
+
+      let risk: ForecastRisk = "unknown";
+      if (item.quantity <= 0) {
+        risk = "critical";
+      } else if (daysUntilStockout !== null && daysUntilStockout <= 7) {
+        risk = "critical";
+      } else if (daysUntilStockout !== null && daysUntilStockout <= 14) {
+        risk = "warning";
+      } else if (daysUntilStockout !== null) {
+        risk = "stable";
+      } else if (item.quantity <= 3) {
+        risk = "warning";
+      }
+
+      return {
+        itemId: item.id,
+        itemCode: item.itemCode,
+        itemName: item.itemName,
+        quantity: item.quantity,
+        soldLast30Days,
+        avgDailySold,
+        daysUntilStockout,
+        projectedStockoutDate,
+        risk,
+      };
+    });
+
+    rows.sort((a, b) => {
+      const rank: Record<ForecastRisk, number> = {
+        critical: 0,
+        warning: 1,
+        stable: 2,
+        unknown: 3,
+      };
+      if (rank[a.risk] !== rank[b.risk]) return rank[a.risk] - rank[b.risk];
+      const aDays = a.daysUntilStockout ?? Number.POSITIVE_INFINITY;
+      const bDays = b.daysUntilStockout ?? Number.POSITIVE_INFINITY;
+      return aDays - bDays;
+    });
+
+    const atRiskCount = rows.filter((row) => row.risk === "critical" || row.risk === "warning").length;
+    const criticalCount = rows.filter((row) => row.risk === "critical").length;
+    return { rows, atRiskCount, criticalCount };
+  }, [items, sales]);
 
   const resetForm = () => {
     setForm(emptyForm);
@@ -371,16 +506,16 @@ export default function InventoryPage() {
       title="Inventory Control"
       subtitle="Manage stock levels directly from Firebase"
     >
-      <div style={{ display: "flex", gap: "16px", marginBottom: "24px" }}>
+      <div className="mb-6 grid grid-cols-1 gap-4 lg:grid-cols-4">
         {[
           { label: "Total Items", value: String(stats.total) },
           { label: "Low Stock", value: String(stats.low) },
           { label: "Out of Stock", value: String(stats.out) },
+          { label: "Forecast At Risk", value: String(forecast.atRiskCount) },
         ].map((card) => (
           <div
             key={card.label}
             style={{
-              flex: 1,
               backgroundColor: "#ffffff",
               border: "1px solid #e2e8f0",
               borderRadius: "4px",
@@ -411,6 +546,142 @@ export default function InventoryPage() {
             </p>
           </div>
         ))}
+      </div>
+
+      <div
+        style={{
+          backgroundColor: "#ffffff",
+          border: "1px solid #e2e8f0",
+          borderRadius: "4px",
+          boxShadow: "2px 2px 0 rgba(0,0,0,0.1)",
+          overflow: "hidden",
+          marginBottom: "16px",
+        }}
+      >
+        <div style={{ padding: "20px", borderBottom: "1px solid #e2e8f0" }}>
+          <h2 style={{ margin: 0, fontSize: "20px", color: "#1a1f2e" }}>
+            Low-Stock Forecast (30-Day Velocity)
+          </h2>
+          <p style={{ margin: "6px 0 0", fontSize: "13px", color: "#64748b" }}>
+            Forecasts stockout dates using delivered sales in the last 30 days.
+            {forecast.criticalCount > 0 ? ` ${forecast.criticalCount} item(s) need urgent restock.` : ""}
+          </p>
+        </div>
+        <div className="overflow-x-auto">
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <thead>
+              <tr
+                style={{
+                  backgroundColor: "#f8fafc",
+                  borderTop: "1px solid #e2e8f0",
+                  borderBottom: "1px solid #e2e8f0",
+                }}
+              >
+                {[
+                  "Item",
+                  "In Stock",
+                  "Sold (30d)",
+                  "Avg/Day",
+                  "Days Left",
+                  "Projected Stockout",
+                  "Risk",
+                ].map((label) => (
+                  <th
+                    key={label}
+                    style={{
+                      padding: "12px 16px",
+                      textAlign: "left",
+                      fontSize: "11px",
+                      letterSpacing: "0.07em",
+                      textTransform: "uppercase",
+                      color: "#64748b",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {label}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {(loading || loadingSales) && (
+                <tr>
+                  <td colSpan={7} style={{ padding: "20px 16px", fontSize: "13px", color: "#64748b" }}>
+                    Loading forecast...
+                  </td>
+                </tr>
+              )}
+
+              {!loading && !loadingSales && forecast.rows.length === 0 && (
+                <tr>
+                  <td colSpan={7} style={{ padding: "20px 16px", fontSize: "13px", color: "#64748b" }}>
+                    No forecast data yet.
+                  </td>
+                </tr>
+              )}
+
+              {!loading &&
+                !loadingSales &&
+                forecast.rows.map((row, idx) => (
+                  <tr
+                    key={row.itemId}
+                    style={{
+                      borderBottom: "1px solid #e2e8f0",
+                      backgroundColor: idx % 2 === 0 ? "#ffffff" : "#f8fafc",
+                    }}
+                  >
+                    <td style={{ padding: "13px 16px", fontSize: "13px", color: "#1a1f2e" }}>
+                      <div style={{ fontWeight: 600 }}>{row.itemName}</div>
+                      <div style={{ fontSize: "12px", color: "#64748b" }}>{row.itemCode}</div>
+                    </td>
+                    <td style={{ padding: "13px 16px", fontSize: "13px", color: "#1a1f2e", fontWeight: 700 }}>
+                      {row.quantity}
+                    </td>
+                    <td style={{ padding: "13px 16px", fontSize: "13px", color: "#1a1f2e" }}>{row.soldLast30Days}</td>
+                    <td style={{ padding: "13px 16px", fontSize: "13px", color: "#1a1f2e" }}>
+                      {row.avgDailySold.toFixed(2)}
+                    </td>
+                    <td style={{ padding: "13px 16px", fontSize: "13px", color: "#1a1f2e" }}>
+                      {row.daysUntilStockout !== null ? row.daysUntilStockout.toFixed(1) : "-"}
+                    </td>
+                    <td style={{ padding: "13px 16px", fontSize: "13px", color: "#1a1f2e" }}>
+                      {row.projectedStockoutDate ? formatDateInPH(row.projectedStockoutDate) : "-"}
+                    </td>
+                    <td style={{ padding: "13px 16px" }}>
+                      <span
+                        style={{
+                          borderRadius: "2px",
+                          padding: "3px 8px",
+                          fontSize: "11px",
+                          fontWeight: 700,
+                          textTransform: "uppercase",
+                          letterSpacing: "0.05em",
+                          background:
+                            row.risk === "critical"
+                              ? "rgba(239,68,68,0.12)"
+                              : row.risk === "warning"
+                              ? "rgba(245,158,11,0.15)"
+                              : row.risk === "stable"
+                              ? "rgba(34,197,94,0.12)"
+                              : "rgba(100,116,139,0.12)",
+                          color:
+                            row.risk === "critical"
+                              ? "#b91c1c"
+                              : row.risk === "warning"
+                              ? "#b45309"
+                              : row.risk === "stable"
+                              ? "#15803d"
+                              : "#64748b",
+                        }}
+                      >
+                        {row.risk}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <div
@@ -749,7 +1020,8 @@ export default function InventoryPage() {
             Live inventory records from Firebase.
           </p>
         </div>
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+        <div className="overflow-x-auto">
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr
               style={{
@@ -884,7 +1156,8 @@ export default function InventoryPage() {
               </tr>
             ))}
           </tbody>
-        </table>
+          </table>
+        </div>
       </div>
     </DashboardShell>
   );
