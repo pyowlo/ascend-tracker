@@ -416,7 +416,49 @@ export default function ExpensesPage() {
             </button>
           </div>
         </div>
-        <div className="overflow-x-auto">
+        <div className="space-y-3 p-4 md:hidden">
+          {loading ? (
+            <p className="rounded-md border border-slate-200 bg-slate-50 px-3 py-6 text-center text-sm text-slate-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400">
+              Loading expenses...
+            </p>
+          ) : filteredExpenses.length === 0 ? (
+            <p className="rounded-md border border-slate-200 bg-slate-50 px-3 py-6 text-center text-sm text-slate-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400">
+              No expenses found for this month.
+            </p>
+          ) : (
+            filteredExpenses.map((row) => (
+              <article key={row.id} className="rounded-md border border-slate-200 bg-white p-3 shadow-sm dark:border-slate-800 dark:bg-slate-950">
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">{row.description}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">{row.expenseDate} | {row.category}</p>
+                  </div>
+                  <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">{formatCurrency(row.amount)}</p>
+                </div>
+                <p className="mt-2 text-xs text-slate-600 dark:text-slate-300">Payment: {row.paymentMethod}</p>
+                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{row.notes || "No notes"}</p>
+                <div className="mt-3 flex gap-3">
+                  <button
+                    type="button"
+                    onClick={() => startEdit(row)}
+                    className="text-sm font-semibold text-[#253b39] underline underline-offset-2 transition-all duration-200 hover:text-[#1f3130] dark:text-teal-300 dark:hover:text-teal-200"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => removeExpense(row.id)}
+                    className="text-sm font-semibold text-red-600 underline underline-offset-2 transition-all duration-200 hover:text-red-700"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </article>
+            ))
+          )}
+        </div>
+
+        <div className="hidden overflow-x-auto md:block">
           <table className="min-w-full border-collapse">
             <thead>
               <tr className="bg-slate-50 text-left dark:bg-slate-900">

@@ -174,7 +174,37 @@ export default function AuditLogsPage() {
           <h2 className="text-2xl font-bold text-slate-900">Recent Activity</h2>
         </div>
 
-        <div className="overflow-x-auto">
+        <div className="space-y-3 p-4 md:hidden">
+          {loading && (
+            <p className="rounded-md border border-slate-200 bg-slate-50 px-3 py-6 text-center text-sm text-slate-500">
+              Loading audit events...
+            </p>
+          )}
+          {!loading && events.length === 0 && (
+            <p className="rounded-md border border-slate-200 bg-slate-50 px-3 py-6 text-center text-sm text-slate-500">
+              No events yet. Inventory and sales actions will appear here automatically.
+            </p>
+          )}
+          {!loading &&
+            events.map((event) => (
+              <article key={event.id} className="rounded-md border border-slate-200 bg-white p-3 shadow-sm">
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <p className="text-sm font-semibold text-slate-900">{event.module}</p>
+                    <p className="text-xs text-slate-500">{event.timeLabel}</p>
+                  </div>
+                  <span className="inline-flex rounded bg-emerald-100 px-2 py-1 text-xs font-semibold text-emerald-700">
+                    {event.result}
+                  </span>
+                </div>
+                <p className="mt-2 text-sm text-slate-800">{event.action}</p>
+                <p className="mt-1 text-xs text-slate-600">{event.subject}</p>
+                <p className="mt-1 text-xs text-slate-500">{event.details}</p>
+              </article>
+            ))}
+        </div>
+
+        <div className="hidden overflow-x-auto md:block">
           <table className="min-w-full border-collapse">
             <thead>
               <tr className="bg-slate-50 text-left">

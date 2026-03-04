@@ -168,7 +168,29 @@ export default function AnalyticsPage() {
           </p>
         </div>
 
-        <div className="overflow-x-auto">
+        <div className="space-y-3 p-4 md:hidden">
+          {loading && <p className="rounded-md border border-slate-200 bg-slate-50 px-3 py-6 text-center text-sm text-slate-500">Loading analytics...</p>}
+          {!loading && productRows.length === 0 && (
+            <p className="rounded-md border border-slate-200 bg-slate-50 px-3 py-6 text-center text-sm text-slate-500">
+              No analytics data yet. Add inventory and record sales to populate this page.
+            </p>
+          )}
+          {!loading &&
+            productRows.map((row) => (
+              <article key={`${row.itemCode}-${row.itemName}`} className="rounded-md border border-slate-200 bg-white p-3 shadow-sm">
+                <p className="text-sm font-semibold text-slate-900">{row.itemName}</p>
+                <p className="text-xs text-slate-500">{row.itemCode}</p>
+                <div className="mt-2 grid grid-cols-2 gap-2 text-xs text-slate-600">
+                  <p>Units: <span className="font-semibold text-slate-900">{row.deliveredUnits.toLocaleString("en-US")}</span></p>
+                  <p>Returns: <span className="font-semibold text-slate-900">{row.returns}</span></p>
+                  <p>Revenue: <span className="font-semibold text-slate-900">{formatCurrency(row.deliveredRevenue)}</span></p>
+                  <p>Stock: <span className="font-semibold text-slate-900">{row.inStock.toLocaleString("en-US")}</span></p>
+                </div>
+              </article>
+            ))}
+        </div>
+
+        <div className="hidden overflow-x-auto md:block">
           <table className="min-w-full border-collapse">
             <thead>
               <tr className="bg-slate-50 text-left">

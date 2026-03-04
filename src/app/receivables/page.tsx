@@ -453,7 +453,113 @@ export default function ReceivablesPage() {
 
         {error ? <p className="px-4 py-3 text-sm text-red-600">{error}</p> : null}
 
-        <div className="overflow-x-auto">
+        <div className="space-y-3 p-4 md:hidden">
+          {loading && (
+            <p className="rounded-md border border-slate-200 bg-slate-50 px-3 py-6 text-center text-sm text-slate-500">
+              Loading receivables...
+            </p>
+          )}
+          {!loading && filteredRows.length === 0 && (
+            <p className="rounded-md border border-slate-200 bg-slate-50 px-3 py-6 text-center text-sm text-slate-500">
+              No outstanding receivables.
+            </p>
+          )}
+          {!loading &&
+            filteredRows.map((row) => (
+              <article key={row.id} className="rounded-md border border-slate-200 bg-white p-3 shadow-sm">
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <p className="text-sm font-semibold text-slate-900">{row.customerName || "Unknown Customer"}</p>
+                    <p className="text-xs text-slate-500">{row.customerPhone}</p>
+                  </div>
+                  <span className={`rounded px-2 py-1 text-xs font-semibold ${row.overdue ? "bg-red-100 text-red-700" : "bg-slate-100 text-slate-700"}`}>
+                    {row.overdue ? "Overdue" : row.agingBucket}
+                  </span>
+                </div>
+
+                <p className="mt-2 text-sm font-semibold text-slate-900">{row.itemName}</p>
+                <p className="text-xs text-slate-500">{row.itemCode} | {formatDateInPH(row.saleDate)}</p>
+
+                <div className="mt-2 grid grid-cols-2 gap-2 text-xs text-slate-600">
+                  <p>Invoice: <span className="font-semibold text-slate-900">{formatCurrency(row.total)}</span></p>
+                  <p>Paid: <span className="font-semibold text-emerald-700">{formatCurrency(row.paidAmount)}</span></p>
+                  <p className="col-span-2">Remaining: <span className="font-semibold text-amber-700">{formatCurrency(row.balanceRemaining)}</span></p>
+                </div>
+
+                <div className="mt-3 space-y-2">
+                  <input
+                    type="date"
+                    value={row.paymentDueDate}
+                    onChange={(e) => setDraft(row.id, { paymentDueDate: e.target.value })}
+                    className="w-full rounded-md border border-slate-200 px-2.5 py-2 text-sm text-slate-800 outline-none transition-colors duration-200 focus:border-[#253b39]"
+                  />
+                  <textarea
+                    value={row.receivableNotes}
+                    onChange={(e) => setDraft(row.id, { receivableNotes: e.target.value })}
+                    rows={2}
+                    className="w-full rounded-md border border-slate-200 px-2.5 py-2 text-sm text-slate-800 outline-none transition-colors duration-200 focus:border-[#253b39]"
+                  />
+                  <input
+                    type="number"
+                    min={0}
+                    step="0.01"
+                    value={drafts[row.id]?.paymentInput ?? ""}
+                    onChange={(e) => setDraft(row.id, { paymentInput: e.target.value })}
+                    className="w-full rounded-md border border-slate-200 px-2.5 py-2 text-sm text-slate-800 outline-none transition-colors duration-200 focus:border-[#253b39]"
+                  />
+                  <select
+                    value={drafts[row.id]?.paymentMethodInput ?? "cash"}
+                    onChange={(e) =>
+                      setDraft(row.id, {
+                        paymentMethodInput: e.target.value as "cash" | "bank_transfer",
+                      })
+                    }
+                    className="w-full rounded-md border border-slate-200 bg-white px-2.5 py-2 text-sm text-slate-800 outline-none transition-colors duration-200 focus:border-[#253b39]"
+                  >
+                    <option value="cash">Cash</option>
+                    <option value="bank_transfer">Bank Transfer</option>
+                  </select>
+                </div>
+
+                <div className="mt-3 grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => saveRow(row.id)}
+                    disabled={savingId === row.id}
+                    className="rounded-md border border-slate-300 bg-white px-2.5 py-2 text-xs font-semibold text-slate-700 transition-colors duration-200 hover:bg-slate-50 disabled:opacity-60"
+                  >
+                    {savingId === row.id ? "Saving..." : "Save"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => addPayment(row)}
+                    disabled={savingId === row.id}
+                    className="rounded-md bg-[#253b39] px-2.5 py-2 text-xs font-semibold text-white transition-colors duration-200 hover:bg-[#1f3130] disabled:opacity-60"
+                  >
+                    Add Payment
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => markAsPaid(row.id, "cash")}
+                    disabled={savingId === row.id}
+                    className="rounded-md bg-[#253b39] px-2.5 py-2 text-xs font-semibold text-white transition-colors duration-200 hover:bg-[#1f3130] disabled:opacity-60"
+                  >
+                    Mark Paid Cash
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => markAsPaid(row.id, "bank_transfer")}
+                    disabled={savingId === row.id}
+                    className="rounded-md border border-[#253b39] bg-white px-2.5 py-2 text-xs font-semibold text-[#253b39] transition-colors duration-200 hover:bg-slate-50 disabled:opacity-60"
+                  >
+                    Mark Paid Bank
+                  </button>
+                </div>
+              </article>
+            ))}
+        </div>
+
+        <div className="hidden overflow-x-auto md:block">
           <table className="min-w-full border-collapse">
             <thead>
               <tr className="bg-slate-50 text-left">

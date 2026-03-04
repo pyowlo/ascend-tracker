@@ -324,16 +324,18 @@ export default function CalendarPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-7 border-b border-slate-200 bg-slate-50">
-            {weekLabels.map((label) => (
-              <div key={label} className="px-3 py-2 text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">
-                {label}
+          <div className="overflow-x-auto">
+            <div className="min-w-[700px]">
+              <div className="grid grid-cols-7 border-b border-slate-200 bg-slate-50">
+                {weekLabels.map((label) => (
+                  <div key={label} className="px-3 py-2 text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">
+                    {label}
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
 
-          <div className="grid grid-cols-7">
-            {calendarDays.map((day) => {
+              <div className="grid grid-cols-7">
+                {calendarDays.map((day) => {
               const dateKey = toDateKey(day);
               const dayRows = scheduleMap.get(dateKey) ?? [];
               const inCurrentMonth = day.getMonth() === calendarAnchor.getMonth();
@@ -385,7 +387,9 @@ export default function CalendarPage() {
                   </div>
                 </button>
               );
-            })}
+                })}
+              </div>
+            </div>
           </div>
         </article>
 

@@ -195,8 +195,42 @@ export default function DashboardPage() {
             </p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full border-collapse">
+          <>
+            <div className="space-y-3 p-4 md:hidden">
+              {filteredSales.map((row) => (
+                <article key={row.id} className="rounded-md border border-slate-200 bg-white p-3 shadow-sm">
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <p className="text-sm font-semibold text-slate-900">{row.itemName}</p>
+                      <p className="text-xs text-slate-500">{formatDate(row.date)}</p>
+                    </div>
+                    <span className={`inline-flex rounded px-2 py-1 text-xs font-semibold ${tagStyle[row.marketingTag]}`}>
+                      {row.marketingTag}
+                    </span>
+                  </div>
+                  <div className="mt-2 grid grid-cols-2 gap-2 text-xs text-slate-600">
+                    <p>Qty: <span className="font-semibold text-slate-900">{row.quantity}</span></p>
+                    <p>Unit: <span className="font-semibold text-slate-900">{formatCurrency(row.unitPrice)}</span></p>
+                    <p className="col-span-2">Total: <span className="font-semibold text-slate-900">{formatCurrency(row.total)}</span></p>
+                  </div>
+                  <button
+                    onClick={() => setActiveReceipt(row)}
+                    className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-[#253b39] underline underline-offset-2 transition-all duration-200 hover:text-[#1d2f2d]"
+                  >
+                    <Eye className="h-4 w-4" />
+                    View Receipt
+                  </button>
+                </article>
+              ))}
+              {filteredSales.length === 0 && (
+                <p className="rounded-md border border-slate-200 bg-slate-50 px-3 py-6 text-center text-sm text-slate-500">
+                  No records found.
+                </p>
+              )}
+            </div>
+
+            <div className="hidden overflow-x-auto md:block">
+              <table className="min-w-full border-collapse">
               <thead>
                 <tr className="bg-slate-50 text-left">
                   {["Date", "Item Name", "Quantity", "Unit Price", "Total", "Marketing Tag", "Actions"].map((header) => (
@@ -245,8 +279,9 @@ export default function DashboardPage() {
                   </tr>
                 )}
               </tbody>
-            </table>
-          </div>
+              </table>
+            </div>
+          </>
         )}
       </section>
 

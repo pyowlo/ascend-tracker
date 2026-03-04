@@ -929,7 +929,74 @@ export default function SalesPage() {
           </div>
         </div>
 
-        <div style={{ overflowX: "auto" }}>
+        <div className="space-y-3 p-4 md:hidden">
+          {loadingSales && (
+            <p className="rounded-md border border-slate-200 bg-slate-50 px-3 py-6 text-center text-sm text-slate-500">
+              Loading sales...
+            </p>
+          )}
+          {!loadingSales && filteredSales.length === 0 && (
+            <p className="rounded-md border border-slate-200 bg-slate-50 px-3 py-6 text-center text-sm text-slate-500">
+              No sales records yet.
+            </p>
+          )}
+          {!loadingSales &&
+            filteredSales.map((sale) => (
+              <article key={sale.id} className="rounded-md border border-slate-200 bg-white p-3 shadow-sm">
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <p className="text-sm font-semibold text-slate-900">{sale.itemName}</p>
+                    <p className="text-xs text-slate-500">{sale.itemCode}</p>
+                  </div>
+                  <span
+                    className="rounded px-2 py-1 text-xs font-semibold"
+                    style={{
+                      background: statusStyle[sale.status].bg,
+                      color: statusStyle[sale.status].color,
+                    }}
+                  >
+                    {sale.status}
+                  </span>
+                </div>
+                <div className="mt-2 grid grid-cols-2 gap-2 text-xs text-slate-600">
+                  <p>Date: <span className="font-semibold text-slate-900">{formatDate(sale.saleDate)}</span></p>
+                  <p>Qty: <span className="font-semibold text-slate-900">{sale.quantity}</span></p>
+                  <p>Total: <span className="font-semibold text-slate-900">{formatCurrency(sale.total)}</span></p>
+                  <p>
+                    Payment:{" "}
+                    <span className="font-semibold text-slate-900">
+                      {sale.paymentMethod === "bank_transfer"
+                        ? "Bank Transfer"
+                        : sale.paymentMethod === "pending_payment"
+                        ? "Pending Payment"
+                        : "Cash"}
+                    </span>
+                  </p>
+                  <p className="col-span-2">Customer: <span className="font-semibold text-slate-900">{sale.customerName}</span></p>
+                </div>
+                <div className="mt-3 flex flex-wrap gap-3 text-sm">
+                  {sale.receiptUrl ? (
+                    <button
+                      onClick={() => setSelectedReceipt(sale)}
+                      className="font-semibold text-[#253b39] underline underline-offset-2"
+                    >
+                      View Receipt
+                    </button>
+                  ) : (
+                    <span className="text-slate-400">No receipt</span>
+                  )}
+                  <button onClick={() => openEditModal(sale)} className="font-semibold text-[#253b39] underline underline-offset-2">
+                    Edit
+                  </button>
+                  <button onClick={() => handleDeleteSale(sale)} className="font-semibold text-red-600 underline underline-offset-2">
+                    Delete
+                  </button>
+                </div>
+              </article>
+            ))}
+        </div>
+
+        <div style={{ overflowX: "auto" }} className="hidden md:block">
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
               <tr style={{ backgroundColor: "#f8fafc", borderBottom: "1px solid #e2e8f0" }}>
