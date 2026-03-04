@@ -532,7 +532,7 @@ export default function ReceivablesPage() {
                         type="date"
                         value={row.paymentDueDate}
                         onChange={(e) => setDraft(row.id, { paymentDueDate: e.target.value })}
-                        className="w-[150px] rounded-md border border-slate-200 px-2.5 py-1.5 text-sm text-slate-800 outline-none transition-colors duration-200 focus:border-[#253b39]"
+                        className="w-full min-w-[130px] rounded-md border border-slate-200 px-2.5 py-1.5 text-sm text-slate-800 outline-none transition-colors duration-200 focus:border-[#253b39] sm:w-[150px]"
                       />
                       {row.overdue ? <p className="mt-1 text-xs font-semibold text-red-600">Overdue</p> : null}
                     </td>
@@ -550,7 +550,7 @@ export default function ReceivablesPage() {
                       </span>
                     </td>
                     <td className="px-4 py-3">
-                      <div className="flex w-[220px] flex-col gap-1.5">
+                      <div className="flex w-full min-w-[170px] flex-col gap-1.5 sm:w-[220px]">
                         <input
                           type="number"
                           min={0}
@@ -583,11 +583,11 @@ export default function ReceivablesPage() {
                         value={row.receivableNotes}
                         onChange={(e) => setDraft(row.id, { receivableNotes: e.target.value })}
                         rows={2}
-                        className="w-[240px] rounded-md border border-slate-200 px-2.5 py-1.5 text-sm text-slate-800 outline-none transition-colors duration-200 focus:border-[#253b39]"
+                        className="w-full min-w-[180px] rounded-md border border-slate-200 px-2.5 py-1.5 text-sm text-slate-800 outline-none transition-colors duration-200 focus:border-[#253b39] sm:w-[240px]"
                       />
                     </td>
                     <td className="px-4 py-3">
-                      <div className="flex min-w-[180px] flex-col gap-1.5">
+                      <div className="flex w-full min-w-[170px] flex-col gap-1.5 sm:min-w-[180px]">
                         <button
                           type="button"
                           onClick={() => saveRow(row.id)}
@@ -611,7 +611,7 @@ export default function ReceivablesPage() {
                             step="0.01"
                             value={drafts[row.id]?.balanceAdjustInput ?? ""}
                             onChange={(e) => setDraft(row.id, { balanceAdjustInput: e.target.value })}
-                            className="w-[110px] rounded-md border border-slate-200 px-2 py-1 text-xs text-slate-800 outline-none transition-colors duration-200 focus:border-[#253b39]"
+                            className="w-full rounded-md border border-slate-200 px-2 py-1 text-xs text-slate-800 outline-none transition-colors duration-200 focus:border-[#253b39] sm:w-[110px]"
                           />
                           <button
                             type="button"
