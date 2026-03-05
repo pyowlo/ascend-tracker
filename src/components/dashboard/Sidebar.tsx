@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   X,
+  LogOut,
   LayoutDashboard,
   Package,
   TrendingUp,
@@ -50,9 +51,10 @@ const navItems = [
 interface SidebarProps {
   mobileOpen?: boolean;
   onClose?: () => void;
+  onLogout?: () => void;
 }
 
-export default function Sidebar({ mobileOpen = false, onClose }: SidebarProps) {
+export default function Sidebar({ mobileOpen = false, onClose, onLogout }: SidebarProps) {
   const pathname = usePathname();
   const { profile } = useAppContext();
 
@@ -97,7 +99,7 @@ export default function Sidebar({ mobileOpen = false, onClose }: SidebarProps) {
           </div>
         </div>
 
-        <nav className="flex-1 px-2.5 py-3">
+        <nav className="flex flex-1 flex-col px-2.5 py-3">
           {navItems.map((item) => {
             const Icon = iconMap[item.icon];
             const isActive = pathname === item.href;
@@ -118,6 +120,18 @@ export default function Sidebar({ mobileOpen = false, onClose }: SidebarProps) {
               </Link>
             );
           })}
+
+          <button
+            type="button"
+            onClick={() => {
+              onLogout?.();
+              onClose?.();
+            }}
+            className="mt-auto inline-flex items-center gap-2.5 rounded border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition-all duration-200 hover:bg-slate-50 lg:hidden"
+          >
+            <LogOut size={16} strokeWidth={2.2} />
+            Logout
+          </button>
         </nav>
 
         <div className="flex items-center gap-2.5 border-t border-slate-200 px-5 py-4 dark:border-slate-800">

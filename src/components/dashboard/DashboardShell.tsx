@@ -37,9 +37,18 @@ export default function DashboardShell({
     return null;
   }
 
+  const handleLogout = () => {
+    logout();
+    router.replace("/login");
+  };
+
   return (
     <div className="flex min-h-screen bg-slate-50 font-[Inter,sans-serif] dark:bg-slate-900">
-      <Sidebar mobileOpen={mobileNavOpen} onClose={() => setMobileNavOpen(false)} />
+      <Sidebar
+        mobileOpen={mobileNavOpen}
+        onClose={() => setMobileNavOpen(false)}
+        onLogout={handleLogout}
+      />
 
       <main className="min-h-screen flex-1 p-4 sm:p-6 lg:ml-[220px]">
         <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
@@ -97,11 +106,8 @@ export default function DashboardShell({
             </button>
             <button
               type="button"
-              onClick={() => {
-                logout();
-                router.replace("/login");
-              }}
-              className="inline-flex items-center gap-1 rounded-md bg-[#253b39] px-3 py-2 text-xs font-semibold text-white transition-colors duration-200 hover:bg-[#1f3130]"
+              onClick={handleLogout}
+              className="hidden items-center gap-1 rounded-md bg-[#253b39] px-3 py-2 text-xs font-semibold text-white transition-colors duration-200 hover:bg-[#1f3130] lg:inline-flex"
             >
               <LogOut className="h-4 w-4" />
               Logout
