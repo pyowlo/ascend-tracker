@@ -47,6 +47,7 @@ type SaleEntry = {
   suggestedRetailPrice: number;
   resellerPrice: number;
   discountedPrice: number;
+  customDiscountedPrice?: number | null;
   total: number;
   paidAmount: number;
   balanceRemaining: number;
@@ -137,6 +138,13 @@ export default function SalesPage() {
   const [selectedSale, setSelectedSale] = useState<SaleEntry | null>(null);
   const [editForm, setEditForm] = useState<EditSaleForm>(emptyEditForm);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDiscountModalOpen, setIsDiscountModalOpen] = useState(false);
+  const [discountContext, setDiscountContext] = useState<"create" | "edit">("create");
+  const [discountInput, setDiscountInput] = useState("");
+  const [discountError, setDiscountError] = useState<string | null>(null);
+  const [discountPrevPricing, setDiscountPrevPricing] = useState<PricingType>("srp");
+  const [customDiscountedPrice, setCustomDiscountedPrice] = useState<number | null>(null);
+  const [editCustomDiscountedPrice, setEditCustomDiscountedPrice] = useState<number | null>(null);
   const [loadingInventory, setLoadingInventory] = useState(true);
   const [loadingSales, setLoadingSales] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -215,6 +223,8 @@ export default function SalesPage() {
               suggestedRetailPrice: Number(data.suggestedRetailPrice ?? 0),
               resellerPrice: Number(data.resellerPrice ?? 0),
               discountedPrice: Number(data.discountedPrice ?? 0),
+              customDiscountedPrice:
+                typeof data.customDiscountedPrice === "number" ? data.customDiscountedPrice : null,
               total: Number(data.total ?? 0),
               paidAmount: Number(data.paidAmount ?? 0),
               balanceRemaining: Number(data.balanceRemaining ?? Number(data.total ?? 0)),
@@ -307,8 +317,10 @@ export default function SalesPage() {
       String(sale.suggestedRetailPrice),
       formatCurrency(sale.resellerPrice),
       String(sale.resellerPrice),
-      formatCurrency(sale.discountedPrice),
-      String(sale.discountedPrice),
+      formatCurrency(
+        typeof sale.customDiscountedPrice === "number" ? sale.customDiscountedPrice : sale.discountedPrice
+      ),
+      String(typeof sale.customDiscountedPrice === "number" ? sale.customDiscountedPrice : sale.discountedPrice),
       formatCurrency(sale.total),
       String(sale.total),
       sale.status,
@@ -345,6 +357,9 @@ export default function SalesPage() {
       return sale.resellerPrice;
     }
     if (pricingType === "discounted") {
+      if (typeof sale.customDiscountedPrice === "number") {
+        return sale.customDiscountedPrice;
+      }
       return sale.discountedPrice;
     }
     return sale.suggestedRetailPrice;
@@ -363,6 +378,13 @@ export default function SalesPage() {
       customerPhone: sale.customerPhone,
       customerAddress: sale.customerAddress,
     });
+    setEditCustomDiscountedPrice(
+      typeof sale.customDiscountedPrice === "number"
+        ? sale.customDiscountedPrice
+        : sale.pricingType === "discounted"
+        ? sale.unitPrice
+        : null
+    );
     setError(null);
     setNotice(null);
     setIsEditModalOpen(true);
@@ -372,6 +394,39 @@ export default function SalesPage() {
     setIsEditModalOpen(false);
     setSelectedSale(null);
     setEditForm(emptyEditForm);
+  };
+
+  const openDiscountModal = (context: "create" | "edit", defaultValue: number | null, prevPricing: PricingType) => {
+    setDiscountContext(context);
+    setDiscountPrevPricing(prevPricing);
+    setDiscountInput(defaultValue !== null ? String(defaultValue) : "");
+    setDiscountError(null);
+    setIsDiscountModalOpen(true);
+  };
+
+  const closeDiscountModal = () => {
+    setIsDiscountModalOpen(false);
+    setDiscountError(null);
+    if (discountContext === "create") {
+      setForm((prev) => ({ ...prev, pricingType: discountPrevPricing }));
+    } else {
+      setEditForm((prev) => ({ ...prev, pricingType: discountPrevPricing }));
+    }
+  };
+
+  const confirmDiscountModal = () => {
+    const value = Number(discountInput);
+    if (Number.isNaN(value) || value <= 0) {
+      setDiscountError("Enter a valid discounted price.");
+      return;
+    }
+    if (discountContext === "create") {
+      setCustomDiscountedPrice(value);
+    } else {
+      setEditCustomDiscountedPrice(value);
+    }
+    setIsDiscountModalOpen(false);
+    setDiscountError(null);
   };
 
   const handleUpdateSale = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -407,7 +462,16 @@ export default function SalesPage() {
       return;
     }
 
-    const nextUnitPrice = getUnitPriceByType(selectedSale, editForm.pricingType);
+    if (editForm.pricingType === "discounted" && (editCustomDiscountedPrice === null || editCustomDiscountedPrice <= 0)) {
+      setError("Set a valid discounted price.");
+      openDiscountModal("edit", selectedSale.discountedPrice ?? null, editForm.pricingType);
+      return;
+    }
+
+    const nextUnitPrice =
+      editForm.pricingType === "discounted" && typeof editCustomDiscountedPrice === "number"
+        ? editCustomDiscountedPrice
+        : getUnitPriceByType(selectedSale, editForm.pricingType);
     const nextTotal = nextUnitPrice * nextQuantity;
 
     setSubmitting(true);
@@ -416,6 +480,10 @@ export default function SalesPage() {
         quantity: nextQuantity,
         pricingType: editForm.pricingType,
         unitPrice: nextUnitPrice,
+        customDiscountedPrice:
+          editForm.pricingType === "discounted"
+            ? editCustomDiscountedPrice ?? selectedSale.discountedPrice
+            : null,
         total: nextTotal,
         balanceRemaining:
           editForm.paymentMethod === "pending_payment"
@@ -578,11 +646,18 @@ export default function SalesPage() {
         }
       }
 
+      if (form.pricingType === "discounted" && (customDiscountedPrice === null || customDiscountedPrice <= 0)) {
+        setSubmitting(false);
+        setError("Set a valid discounted price.");
+        openDiscountModal("create", selectedInventory.discountedPrice ?? null, "srp");
+        return;
+      }
+
       const unitPrice =
         form.pricingType === "reseller"
           ? selectedInventory.resellerPrice
           : form.pricingType === "discounted"
-          ? selectedInventory.discountedPrice
+          ? (customDiscountedPrice ?? selectedInventory.discountedPrice)
           : selectedInventory.suggestedRetailPrice;
       const total = unitPrice * quantity;
       const saleDate = getCurrentPHIsoString();
@@ -602,6 +677,10 @@ export default function SalesPage() {
         suggestedRetailPrice: selectedInventory.suggestedRetailPrice,
         resellerPrice: selectedInventory.resellerPrice,
         discountedPrice: selectedInventory.discountedPrice,
+        customDiscountedPrice:
+          form.pricingType === "discounted"
+            ? customDiscountedPrice ?? selectedInventory.discountedPrice
+            : null,
         total,
         paidAmount: form.paymentMethod === "pending_payment" ? 0 : total,
         balanceRemaining: form.paymentMethod === "pending_payment" ? total : 0,
@@ -642,6 +721,7 @@ export default function SalesPage() {
       });
 
       setForm(emptyForm);
+      setCustomDiscountedPrice(null);
       setReceiptFile(null);
     } catch {
       setError("Failed to save sale. Check Firebase rules for Firestore/Storage.");
@@ -740,9 +820,16 @@ export default function SalesPage() {
               Pricing Type
               <select
                 value={form.pricingType}
-                onChange={(e) =>
-                  setForm((prev) => ({ ...prev, pricingType: e.target.value as PricingType }))
-                }
+                onChange={(e) => {
+                  const next = e.target.value as PricingType;
+                  if (next === "discounted") {
+                    const defaultValue = selectedInventory?.discountedPrice ?? null;
+                    openDiscountModal("create", defaultValue, form.pricingType);
+                  } else {
+                    setCustomDiscountedPrice(null);
+                  }
+                  setForm((prev) => ({ ...prev, pricingType: next }));
+                }}
                 className="rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800 outline-none transition-colors duration-200 focus:border-[#253b39]"
               >
                 <option value="srp">Suggested Retail Price (SRP)</option>
@@ -852,7 +939,7 @@ export default function SalesPage() {
                       form.pricingType === "reseller"
                         ? selectedInventory.resellerPrice
                         : form.pricingType === "discounted"
-                        ? selectedInventory.discountedPrice
+                        ? (customDiscountedPrice ?? selectedInventory.discountedPrice)
                         : selectedInventory.suggestedRetailPrice
                     )}
                   </strong>
@@ -862,6 +949,24 @@ export default function SalesPage() {
                     <>
                       {" | "}
                       Package: <strong>{selectedInventory.packageItems.join(" + ")}</strong>
+                    </>
+                  ) : null}
+                  {form.pricingType === "discounted" ? (
+                    <>
+                      {" | "}
+                      <button
+                        type="button"
+                        onClick={() =>
+                          openDiscountModal(
+                            "create",
+                            customDiscountedPrice ?? selectedInventory.discountedPrice ?? null,
+                            form.pricingType
+                          )
+                        }
+                        className="font-semibold text-[#253b39] underline underline-offset-2"
+                      >
+                        Edit discounted price
+                      </button>
                     </>
                   ) : null}
                 </span>
@@ -887,6 +992,7 @@ export default function SalesPage() {
               onClick={() => {
                 setForm(emptyForm);
                 setReceiptFile(null);
+                setCustomDiscountedPrice(null);
                 setError(null);
               }}
               className="rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-600 transition-colors duration-200 hover:bg-slate-50"
@@ -1075,7 +1181,14 @@ export default function SalesPage() {
                     </div>
                     <div>SRP: {formatCurrency(sale.suggestedRetailPrice)}</div>
                     <div>Reseller: {formatCurrency(sale.resellerPrice)}</div>
-                    <div>Discounted: {formatCurrency(sale.discountedPrice)}</div>
+                    <div>
+                      Discounted:{" "}
+                      {formatCurrency(
+                        typeof sale.customDiscountedPrice === "number"
+                          ? sale.customDiscountedPrice
+                          : sale.discountedPrice
+                      )}
+                    </div>
                   </td>
                   <td style={{ padding: "13px 16px", fontSize: "13px", color: "#1a1f2e", fontWeight: 600 }}>
                     {formatCurrency(sale.total)}
@@ -1168,6 +1281,58 @@ export default function SalesPage() {
         </div>
       </div>
 
+      {isDiscountModalOpen && (
+        <div
+          onClick={closeDiscountModal}
+          className="fixed inset-0 z-[140] flex items-center justify-center bg-slate-900/50 p-4"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-md rounded-lg border border-slate-200 bg-white shadow-xl"
+          >
+            <div className="flex items-center justify-between border-b border-slate-200 px-5 py-4">
+              <h3 className="text-lg font-bold text-slate-900">Set Discounted Price</h3>
+              <button
+                onClick={closeDiscountModal}
+                className="rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm font-semibold text-slate-600 transition-colors duration-200 hover:bg-slate-50"
+              >
+                Close
+              </button>
+            </div>
+            <div className="space-y-3 p-5">
+              <label className="flex flex-col gap-1.5 text-xs text-slate-500">
+                Discounted Price (PHP)
+                <input
+                  type="number"
+                  min={0}
+                  step="0.01"
+                  value={discountInput}
+                  onChange={(e) => setDiscountInput(e.target.value)}
+                  className="rounded-md border border-slate-200 px-3 py-2 text-sm text-slate-800 outline-none transition-colors duration-200 focus:border-[#253b39]"
+                />
+              </label>
+              {discountError ? <p className="text-sm text-red-600">{discountError}</p> : null}
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={confirmDiscountModal}
+                  className="rounded-md bg-[#253b39] px-4 py-2 text-sm font-semibold text-white transition-colors duration-200 hover:bg-[#1f3130]"
+                >
+                  Save Discount
+                </button>
+                <button
+                  type="button"
+                  onClick={closeDiscountModal}
+                  className="rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-600 transition-colors duration-200 hover:bg-slate-50"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {isEditModalOpen && selectedSale && (
         <div
           onClick={closeEditModal}
@@ -1203,18 +1368,45 @@ export default function SalesPage() {
                   Pricing Type
                   <select
                     value={editForm.pricingType}
-                    onChange={(e) =>
+                    onChange={(e) => {
+                      const next = e.target.value as PricingType;
+                      if (next === "discounted") {
+                        const defaultValue =
+                          typeof editCustomDiscountedPrice === "number"
+                            ? editCustomDiscountedPrice
+                            : selectedSale?.discountedPrice ?? null;
+                        openDiscountModal("edit", defaultValue, editForm.pricingType);
+                      } else {
+                        setEditCustomDiscountedPrice(null);
+                      }
                       setEditForm((prev) => ({
                         ...prev,
-                        pricingType: e.target.value as PricingType,
-                      }))
-                    }
+                        pricingType: next,
+                      }));
+                    }}
                     className="rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800 outline-none transition-colors duration-200 focus:border-[#253b39]"
                   >
                     <option value="srp">Suggested Retail Price (SRP)</option>
                     <option value="reseller">Reseller's Price</option>
                     <option value="discounted">Discounted Price</option>
                   </select>
+                  {editForm.pricingType === "discounted" ? (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        openDiscountModal(
+                          "edit",
+                          typeof editCustomDiscountedPrice === "number"
+                            ? editCustomDiscountedPrice
+                            : selectedSale?.discountedPrice ?? null,
+                          editForm.pricingType
+                        )
+                      }
+                      className="mt-1 text-left text-xs font-semibold text-[#253b39] underline underline-offset-2"
+                    >
+                      Edit discounted price
+                    </button>
+                  ) : null}
                 </label>
                 <label className="flex flex-col gap-1.5 text-xs text-slate-500">
                   Status

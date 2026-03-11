@@ -1,10 +1,12 @@
 ﻿"use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Download, Eye, Inbox, Search } from "lucide-react";
 import DashboardShell from "@/components/dashboard/DashboardShell";
-import { MarketingTag, SaleRecord, sparklineData } from "@/lib/dashboard-data";
+import { sparklineData } from "@/lib/dashboard-data";
+import { db } from "@/lib/firebase";
 import { formatDateInPH } from "@/lib/time";
+import { collection, onSnapshot, query } from "firebase/firestore";
 
 function formatCurrency(value: number) {
   return new Intl.NumberFormat("en-PH", {
@@ -45,17 +47,67 @@ function Sparkline({ data }: { data: number[] }) {
   );
 }
 
-const tagStyle: Record<MarketingTag, string> = {
-  Promo: "bg-violet-100 text-violet-700",
-  Organic: "bg-emerald-100 text-emerald-700",
-  Paid: "bg-blue-100 text-blue-700",
-  Referral: "bg-orange-100 text-orange-700",
+type PaymentTag = "Paid" | "Pending" | "Returned";
+
+type DashboardSale = {
+  id: string;
+  date: string;
+  itemName: string;
+  quantity: number;
+  unitPrice: number;
+  total: number;
+  balanceRemaining: number;
+  paymentTag: PaymentTag;
+  receiptId: string;
+};
+
+const tagStyle: Record<PaymentTag, string> = {
+  Paid: "bg-emerald-100 text-emerald-700",
+  Pending: "bg-amber-100 text-amber-700",
+  Returned: "bg-rose-100 text-rose-700",
 };
 
 export default function DashboardPage() {
-  const [salesData, setSalesData] = useState<SaleRecord[]>([]);
+  const [salesData, setSalesData] = useState<DashboardSale[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeReceipt, setActiveReceipt] = useState<SaleRecord | null>(null);
+  const [activeReceipt, setActiveReceipt] = useState<DashboardSale | null>(null);
+
+  useEffect(() => {
+    const q = query(collection(db, "sales"));
+    const unsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
+        const rows = snapshot.docs.map((entry) => {
+          const data = entry.data();
+          const status = String(data.status ?? "");
+          const paymentMethod = String(data.paymentMethod ?? "");
+          const balanceRemaining = Number(data.balanceRemaining ?? 0);
+          const paymentTag: PaymentTag =
+            status === "returned"
+              ? "Returned"
+              : paymentMethod === "pending_payment" || balanceRemaining > 0
+              ? "Pending"
+              : "Paid";
+          return {
+            id: entry.id,
+            date: String(data.saleDate ?? ""),
+            itemName: String(data.itemName ?? ""),
+            quantity: Number(data.quantity ?? 0),
+            unitPrice: Number(data.unitPrice ?? 0),
+            total: Number(data.total ?? 0),
+            balanceRemaining,
+            paymentTag,
+            receiptId: String(data.receiptId ?? ""),
+          };
+        });
+        setSalesData(rows);
+      },
+      () => {
+        setSalesData([]);
+      }
+    );
+    return () => unsubscribe();
+  }, []);
 
   const filteredSales = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
@@ -66,20 +118,22 @@ export default function DashboardPage() {
     return salesData.filter((entry) => {
       return (
         entry.itemName.toLowerCase().includes(q) ||
-        entry.marketingTag.toLowerCase().includes(q)
+        entry.paymentTag.toLowerCase().includes(q)
       );
     });
   }, [searchQuery, salesData]);
 
   const metrics = useMemo(() => {
-    const revenue = salesData.reduce((sum, row) => sum + row.total, 0);
+    const totalSales = salesData.reduce((sum, row) => sum + row.total, 0);
+    const pendingAmount = salesData.reduce((sum, row) => sum + Math.max(row.balanceRemaining, 0), 0);
+    const paidAmount = Math.max(totalSales - pendingAmount, 0);
     const sold = salesData.reduce((sum, row) => sum + row.quantity, 0);
-    const low = salesData.filter((row) => row.lowStock).length;
 
     return {
-      revenue: formatCurrency(revenue),
+      totalSales: formatCurrency(totalSales),
+      paidAmount: formatCurrency(paidAmount),
+      pendingAmount: formatCurrency(pendingAmount),
       sold: sold.toLocaleString("en-US"),
-      low: low.toLocaleString("en-US"),
     };
   }, [salesData]);
 
@@ -88,14 +142,14 @@ export default function DashboardPage() {
       return;
     }
 
-    const headers = ["Date", "Item Name", "Quantity", "Unit Price", "Total", "Marketing Tag"];
+    const headers = ["Date", "Item Name", "Quantity", "Unit Price", "Total", "Payment Status"];
     const rows = filteredSales.map((row) => [
       row.date,
       row.itemName,
       String(row.quantity),
       String(row.unitPrice),
       String(row.total),
-      row.marketingTag,
+      row.paymentTag,
     ]);
 
     const csv = [headers, ...rows].map((line) => line.join(",")).join("\n");
@@ -114,12 +168,12 @@ export default function DashboardPage() {
       title="Sales Dashboard"
       subtitle="Track revenue, inventory, and sales performance"
     >
-      <section className="mb-6 grid grid-cols-1 gap-4 lg:grid-cols-3">
+      <section className="mb-6 grid grid-cols-1 gap-4 lg:grid-cols-4">
         <article className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
           <div className="mb-3 flex items-start justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">Total Revenue</p>
-              <p className="mt-2 text-4xl font-extrabold text-slate-900">{metrics.revenue}</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">Total Sales</p>
+              <p className="mt-2 text-4xl font-extrabold text-slate-900">{metrics.totalSales}</p>
             </div>
           </div>
           {salesData.length > 0 && (
@@ -133,13 +187,13 @@ export default function DashboardPage() {
         <article className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
           <div className="mb-3 flex items-start justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">Items Sold</p>
-              <p className="mt-2 text-4xl font-extrabold text-slate-900">{metrics.sold}</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">Paid Amount</p>
+              <p className="mt-2 text-4xl font-extrabold text-slate-900">{metrics.paidAmount}</p>
             </div>
           </div>
           {salesData.length > 0 && (
             <div className="flex items-end justify-between">
-              <span className="rounded bg-emerald-100 px-2 py-1 text-xs font-semibold text-emerald-700">+8.7% vs last month</span>
+              <span className="rounded bg-emerald-100 px-2 py-1 text-xs font-semibold text-emerald-700">Paid to date</span>
               <Sparkline data={sparklineData.itemsSold} />
             </div>
           )}
@@ -148,14 +202,29 @@ export default function DashboardPage() {
         <article className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
           <div className="mb-3 flex items-start justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">Low Stock Alerts</p>
-              <p className="mt-2 text-4xl font-extrabold text-slate-900">{metrics.low}</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">Pending Amount</p>
+              <p className="mt-2 text-4xl font-extrabold text-slate-900">{metrics.pendingAmount}</p>
             </div>
           </div>
           {salesData.length > 0 && (
             <div className="flex items-end justify-between">
-              <span className="rounded bg-rose-100 px-2 py-1 text-xs font-semibold text-rose-700">+2 vs last month</span>
+              <span className="rounded bg-amber-100 px-2 py-1 text-xs font-semibold text-amber-700">Pending balance</span>
               <Sparkline data={sparklineData.lowStock} />
+            </div>
+          )}
+        </article>
+
+        <article className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+          <div className="mb-3 flex items-start justify-between">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">Items Sold</p>
+              <p className="mt-2 text-4xl font-extrabold text-slate-900">{metrics.sold}</p>
+            </div>
+          </div>
+          {salesData.length > 0 && (
+            <div className="flex items-end justify-between">
+              <span className="rounded bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-600">Units shipped</span>
+              <Sparkline data={sparklineData.itemsSold} />
             </div>
           )}
         </article>
@@ -204,8 +273,8 @@ export default function DashboardPage() {
                       <p className="text-sm font-semibold text-slate-900">{row.itemName}</p>
                       <p className="text-xs text-slate-500">{formatDate(row.date)}</p>
                     </div>
-                    <span className={`inline-flex rounded px-2 py-1 text-xs font-semibold ${tagStyle[row.marketingTag]}`}>
-                      {row.marketingTag}
+                    <span className={`inline-flex rounded px-2 py-1 text-xs font-semibold ${tagStyle[row.paymentTag]}`}>
+                      {row.paymentTag}
                     </span>
                   </div>
                   <div className="mt-2 grid grid-cols-2 gap-2 text-xs text-slate-600">
@@ -233,7 +302,7 @@ export default function DashboardPage() {
               <table className="min-w-full border-collapse">
               <thead>
                 <tr className="bg-slate-50 text-left">
-                  {["Date", "Item Name", "Quantity", "Unit Price", "Total", "Marketing Tag", "Actions"].map((header) => (
+                {["Date", "Item Name", "Quantity", "Unit Price", "Total", "Payment Status", "Actions"].map((header) => (
                     <th
                       key={header}
                       className="whitespace-nowrap border-b border-slate-200 px-4 py-3 text-xs font-semibold uppercase tracking-[0.08em] text-slate-500"
@@ -255,8 +324,8 @@ export default function DashboardPage() {
                     <td className="border-b border-slate-100 px-4 py-3 text-sm text-slate-700">{formatCurrency(row.unitPrice)}</td>
                     <td className="border-b border-slate-100 px-4 py-3 text-sm font-semibold text-slate-900">{formatCurrency(row.total)}</td>
                     <td className="border-b border-slate-100 px-4 py-3">
-                      <span className={`inline-flex rounded px-2 py-1 text-xs font-semibold ${tagStyle[row.marketingTag]}`}>
-                        {row.marketingTag}
+                      <span className={`inline-flex rounded px-2 py-1 text-xs font-semibold ${tagStyle[row.paymentTag]}`}>
+                        {row.paymentTag}
                       </span>
                     </td>
                     <td className="border-b border-slate-100 px-4 py-3">

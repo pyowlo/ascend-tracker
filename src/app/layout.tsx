@@ -1,15 +1,28 @@
 import type { Metadata } from "next";
 import { AppProvider } from "@/lib/app-context";
+import PwaRegister from "@/components/pwa/PwaRegister";
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Ascend Tracker - Admin Dashboard",
   description: "Internal business admin dashboard for operations and sales teams",
+  manifest: "/manifest.webmanifest",
+  applicationName: "Ascend Tracker",
+  icons: {
+    icon: "/assets/ascend-logo.png",
+    apple: "/assets/ascend-logo.png",
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Ascend Tracker",
+  },
 };
 
 export const viewport = {
   width: "device-width",
   initialScale: 1,
+  themeColor: "#253b39",
 };
 
 export default function RootLayout({
@@ -28,6 +41,7 @@ export default function RootLayout({
         />
       </head>
       <body style={{ margin: 0, padding: 0, fontFamily: "'Inter', sans-serif" }}>
+        <PwaRegister />
         <AppProvider>{children}</AppProvider>
       </body>
     </html>

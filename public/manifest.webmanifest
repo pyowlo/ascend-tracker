@@ -1,0 +1,26 @@
+{
+  "name": "Ascend Tracker",
+  "short_name": "Ascend",
+  "description": "Internal admin dashboard for Ascend operations, inventory, sales, and schedules.",
+  "start_url": "/dashboard",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#253b39",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/assets/ascend-logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/ascend-logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
+
